@@ -94,6 +94,11 @@
   border-radius: 14px;
 }
 
+.region-table-wrapper.cyber-card {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
 .region-table {
   width: 100%;
   border-collapse: collapse;
@@ -317,10 +322,21 @@
     letter-spacing: 1px;
   }
 
+  .region-table-wrapper {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+  }
+
+  .region-table {
+    min-width: 500px;
+  }
+
   .region-table th,
   .region-table td {
     padding: 0.6rem 0.5rem;
     font-size: 0.75rem;
+    white-space: nowrap;
   }
 
   .project-category {
