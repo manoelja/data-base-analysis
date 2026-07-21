@@ -100,7 +100,7 @@
 }
 
 .chart-type-btns .control-btn.blocked {
-  opacity: 0.35;
+  opacity: 0.5;
   cursor: not-allowed;
   border-style: dashed;
 }
@@ -406,6 +406,28 @@ html.light-theme .dashboard-chart-scroll::-webkit-scrollbar-thumb:hover {
 /* Data Table */
 .data-table-wrapper {
   overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) rgba(255, 255, 255, 0.1);
+}
+
+.data-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.data-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.data-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #ff85b1;
 }
 
 .data-table {
@@ -661,16 +683,53 @@ html.light-theme tr.clickable:hover {
 
 /* Chart Tooltip */
 .chart-tooltip {
-  background: var(--glass-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--cyber-radius);
-  padding: 0.5rem 0.8rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  background: rgba(15, 10, 30, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: tooltipFadeIn 0.15s ease-out;
+}
+
+.chart-tooltip .tooltip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.chart-tooltip .tooltip-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
+
+.chart-tooltip .tooltip-value {
+  color: #fff;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.02em;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Period Filter */
@@ -825,6 +884,16 @@ html.light-theme tr.clickable:hover {
 html.light-theme .secondary-filters {
   background: rgba(255, 255, 255, 0.5);
   border-color: rgba(233, 30, 138, 0.12);
+}
+
+/* Light Theme - Dashboard */
+html.light-theme .dashboard-chart-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+html.light-theme .line-chart-wrapper {
+  background: var(--card-bg);
 }
 
 .secondary-btns {
@@ -1176,8 +1245,22 @@ html.light-theme .secondary-filters {
 
   .data-table th,
   .data-table td {
-    padding: 0.6rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 0.4rem;
+    font-size: 0.65rem;
+  }
+
+  .data-table th {
+    font-size: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    min-width: 320px;
   }
 
   .insight-item {
@@ -1188,5 +1271,30 @@ html.light-theme .secondary-filters {
   .insight-icon {
     width: 24px;
     height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table th {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.45rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+
+  .data-table {
+    min-width: 280px;
+  }
+
+  .th-dot {
+    width: 6px;
+    height: 6px;
+    margin-right: 0.2rem;
   }
 }

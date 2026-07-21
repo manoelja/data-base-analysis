@@ -60,6 +60,23 @@ const Dashboard = () => {
     });
   };
 
+  const multiMetric = metrics.length > 1;
+
+  const validChartTypes: Record<boolean, ChartType[]> = {
+    false: ['bar', 'horizontal', 'grouped', 'stacked', 'line', 'donut', 'table'],
+    true: ['grouped', 'stacked', 'line', 'table'],
+  };
+
+  const getAutoChart = (): ChartType => {
+    if (multiMetric) {
+      return validChartTypes[true].includes(chartType) ? chartType : 'grouped';
+    }
+    return chartType;
+  };
+
+  const autoChart = getAutoChart();
+  const isComparative = multiMetric;
+
   const allData = useMemo(() => {
     const result: Record<DataSource, { label: string; values: Record<Metric, number> }[]> = {
       region: regionData.map(d => ({
@@ -112,10 +129,6 @@ const Dashboard = () => {
       })),
     }));
   }, [dataSources, metrics, lang, allData]);
-
-  const multiMetric = metrics.length > 1;
-  const autoChart: ChartType = multiMetric ? 'grouped' : chartType;
-  const isComparative = multiMetric;
 
   const insights = useMemo(() => {
     const result: { type: 'high' | 'low' | 'info' | 'warning'; text: string }[] = [];
@@ -250,25 +263,27 @@ const Dashboard = () => {
               <label className="control-label">{t('dashboard.chart')}</label>
               <div className="control-buttons chart-type-btns">
                 {[
-                  { type: 'bar' as ChartType, icon: <BarChart3 size={15} />, tip: 'Barras verticais', blocked: multiMetric },
-                  { type: 'horizontal' as ChartType, icon: <TrendingUp size={15} />, tip: 'Barras horizontais', blocked: multiMetric },
-                  { type: 'grouped' as ChartType, icon: <LayoutGrid size={15} />, tip: 'Agrupado (multi-métrica)', blocked: false },
-                  { type: 'stacked' as ChartType, icon: <Layers size={15} />, tip: 'Empilhado (multi-métrica)', blocked: false },
-                  { type: 'line' as ChartType, icon: <GitCompare size={15} />, tip: 'Linha', blocked: false },
-                  { type: 'donut' as ChartType, icon: <CircleDot size={15} />, tip: 'Donut', blocked: multiMetric },
-                  { type: 'table' as ChartType, icon: <Table2 size={15} />, tip: 'Tabela', blocked: false },
-                ].map(c => (
-                  <button
-                    key={c.type}
-                    className={`control-btn chart-btn ${autoChart === c.type ? 'active' : ''} ${c.blocked ? 'blocked' : ''}`}
-                    onClick={() => !c.blocked && setChartType(c.type)}
-                    title={c.blocked ? `${c.tip} (indisponível com multi-métrica)` : c.tip}
-                    disabled={c.blocked}
-                  >
-                    {c.icon}
-                    {c.blocked && <Lock size={10} className="lock-icon" />}
-                  </button>
-                ))}
+                  { type: 'bar' as ChartType, icon: <BarChart3 size={15} />, tip: 'Barras verticais' },
+                  { type: 'horizontal' as ChartType, icon: <TrendingUp size={15} />, tip: 'Barras horizontais' },
+                  { type: 'grouped' as ChartType, icon: <LayoutGrid size={15} />, tip: 'Agrupado (multi-métrica)' },
+                  { type: 'stacked' as ChartType, icon: <Layers size={15} />, tip: 'Empilhado (multi-métrica)' },
+                  { type: 'line' as ChartType, icon: <GitCompare size={15} />, tip: 'Linha' },
+                  { type: 'donut' as ChartType, icon: <CircleDot size={15} />, tip: 'Donut' },
+                  { type: 'table' as ChartType, icon: <Table2 size={15} />, tip: 'Tabela' },
+                ].map(c => {
+                  const isBlocked = multiMetric && !validChartTypes[true].includes(c.type);
+                  return (
+                    <button
+                      key={c.type}
+                      className={`control-btn chart-btn ${autoChart === c.type ? 'active' : ''} ${isBlocked ? 'blocked' : ''}`}
+                      onClick={() => setChartType(c.type)}
+                      title={isBlocked ? `${c.tip} (indisponível com multi-métrica)` : c.tip}
+                    >
+                      {c.icon}
+                      {isBlocked && <Lock size={10} className="lock-icon" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

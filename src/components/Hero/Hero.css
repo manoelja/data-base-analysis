@@ -210,7 +210,12 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--text-secondary);
-  animation: bounce 2s infinite;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.scroll-indicator.clicked {
+  animation: bounce 0.5s ease;
 }
 
 @keyframes bounce {
@@ -279,7 +284,7 @@
   }
 
   .scroll-indicator {
-    bottom: 1.5rem;
+    bottom: 0.5rem;
     font-size: 0.6rem;
     letter-spacing: 1px;
   }
@@ -306,7 +311,7 @@
   }
 
   .scroll-indicator {
-    bottom: 1rem;
+    bottom: 0.3rem;
     font-size: 0.55rem;
   }
 }

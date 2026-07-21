@@ -148,6 +148,25 @@
   align-items: start;
 }
 
+.analysis-section {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.skill-content-wrapper {
+  min-height: 30px;
+}
+
+.project-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .project-card {
   padding: 1.6rem;
   background: linear-gradient(145deg, var(--card-bg) 0%, rgba(255, 107, 157, 0.02) 100%);
@@ -188,6 +207,17 @@
   background-clip: text;
 }
 
+.project-title-expanded {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.3rem;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .project-desc {
   font-size: 0.88rem;
   color: var(--text-secondary);
@@ -211,7 +241,6 @@
 
 .project-details {
   padding-top: 1.2rem;
-  border-top: 1px dashed var(--card-border);
   display: flex;
   flex-direction: column;
   gap: 1rem;

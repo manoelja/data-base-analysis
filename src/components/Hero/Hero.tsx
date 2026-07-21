@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { MousePointer2, ChevronDown, Heart, Baby, Stethoscope, Activity } from 'lucide-react';
@@ -150,14 +150,11 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="scroll-indicator">
+      <div className="scroll-indicator" onClick={() => {
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+      }}>
         <span>{t('hero.scroll')}</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronDown size={24} color="var(--accent-color)" />
-        </motion.div>
+        <ChevronDown size={24} color="var(--accent-color)" />
       </div>
     </section>
   );

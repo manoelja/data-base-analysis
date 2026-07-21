@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Code, Database, Search, FileText, BarChart, Eye } from 'lucide-react';
 import { techStack } from '../../data/analysis';
@@ -52,30 +52,40 @@ const Skills = () => {
           {techStack.map((skill) => (
             <div
               key={skill.name}
-              className={`skill-badge cyber-card ${expandedSkill === skill.name ? 'expanded' : ''}`}
+              className="skill-badge cyber-card"
               onClick={() => toggleSkill(skill.name)}
               style={{ cursor: 'pointer' }}
             >
-              <div className="skill-header">
-                <div className="skill-main-info">
-                  <div className="skill-icon-wrapper">
-                    {iconMap[skill.icon] || <Code size={18} />}
-                  </div>
-                  <div className="skill-text-info">
-                    <span className="skill-category">{skill.category}</span>
-                    <span className="skill-name">{skill.name}</span>
-                  </div>
-                </div>
-                <div
-                  className="skill-expand-icon"
-                  style={{ transform: expandedSkill === skill.name ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                >
-                  <ChevronDown size={16} opacity={0.4} />
-                </div>
-              </div>
-
-              <div className="skill-detail-text">
-                <p>{skill.detail}</p>
+              <div className="skill-content-wrapper">
+                <AnimatePresence mode="wait">
+                  {expandedSkill !== skill.name ? (
+                    <motion.div
+                      key="header"
+                      className="skill-header"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <div className="skill-main-info">
+                        <span className="skill-name">{skill.name}</span>
+                        <span className="skill-category">{skill.category}</span>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="detail"
+                      className="skill-detail-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <span className="skill-name-detail">{skill.name}</span>
+                      <p>{skill.detail}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           ))}

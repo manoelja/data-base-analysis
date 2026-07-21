@@ -311,9 +311,10 @@ html.light-theme .terminal-input::placeholder {
 }
 
 .footer-copyright-text {
-  font-size: 0.75rem;
+  font-size: clamp(0.55rem, 1.5vw, 0.75rem);
   color: var(--text-secondary);
   font-family: monospace;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

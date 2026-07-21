@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import './Projects.css';
 import { analysisResults, regionData, summaryStats } from '../../data/analysis';
@@ -105,41 +105,74 @@ const Projects = () => {
         </motion.div>
 
         {/* Analysis Results */}
+        <div className="analysis-section">
+          <h3 className="region-title">RESULTADOS DA ANÁLISE</h3>
+        </div>
+
         <motion.div
           className="projects-grid"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true }}
         >
           {analysisResults.map((project) => (
-            <div
+            <motion.div
               key={project.id}
-              className={`project-card cyber-card ${expandedId === project.id ? 'expanded' : ''}`}
+              className="project-card cyber-card"
+              variants={itemVariants}
               onClick={() => toggleProject(project.id)}
               style={{ cursor: 'pointer' }}
             >
-              <div className="project-header">
-                <span className="project-category">
-                  <Lock size={10} style={{ marginRight: '5px' }} />
-                  {project.category[currentLang] || project.category['pt']}
-                </span>
-              </div>
-
-              <h3 className="project-title">{project.title[currentLang] || project.title['pt']}</h3>
-              <p className="project-desc">
-                {project.description[currentLang] || project.description['pt']}
-              </p>
-
-              <div className="project-synopsis">
-                <div className="project-details">
-                  <div className="detail-item">
-                    <strong>PROBLEMA:</strong> {project.problem[currentLang] || project.problem['pt']}
-                  </div>
-                  <div className="detail-item">
-                    <strong>RESULTADO:</strong> <span className="highlight">{project.result[currentLang] || project.result['pt']}</span>
-                  </div>
-                </div>
+              <div className="skill-content-wrapper">
+                <AnimatePresence mode="wait">
+                  {expandedId !== project.id ? (
+                    <motion.div
+                      key="preview"
+                      className="project-preview"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <div className="project-header">
+                        <span className="project-category">
+                          <Lock size={10} style={{ marginRight: '5px' }} />
+                          {project.category[currentLang] || project.category['pt']}
+                        </span>
+                      </div>
+                      <h3 className="project-title">{project.title[currentLang] || project.title['pt']}</h3>
+                      <p className="project-desc">
+                        {project.description[currentLang] || project.description['pt']}
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="details"
+                      className="project-detail-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <div className="project-header">
+                        <span className="project-category">
+                          <Lock size={10} style={{ marginRight: '5px' }} />
+                          {project.category[currentLang] || project.category['pt']}
+                        </span>
+                      </div>
+                      <h3 className="project-title-expanded">{project.title[currentLang] || project.title['pt']}</h3>
+                      <div className="project-details">
+                        <div className="detail-item">
+                          <strong>PROBLEMA:</strong> {project.problem[currentLang] || project.problem['pt']}
+                        </div>
+                        <div className="detail-item">
+                          <strong>RESULTADO:</strong> {project.result[currentLang] || project.result['pt']}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="project-tags">
@@ -147,7 +180,7 @@ const Projects = () => {
                   <span key={tag} className="tag">{tag}</span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>

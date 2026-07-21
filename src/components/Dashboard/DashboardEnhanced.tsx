@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,7 +14,7 @@ type ChartType = 'bar' | 'horizontal' | 'grouped' | 'stacked' | 'line' | 'donut'
 type Metric = 'births' | 'pctCesarea' | 'pctBaixoPeso' | 'pctPrematuro';
 type PrimaryFilter = 'region' | 'year' | 'age' | 'sexo';
 
-const METRIC_COLORS: Record<Metric, string> = {
+const metricColors: Record<Metric, string> = {
   births: '#ff6b9d',
   pctCesarea: '#b48cff',
   pctBaixoPeso: '#7dd3fc',
@@ -72,8 +72,21 @@ const DashboardEnhanced = () => {
   });
   const [ageFrom, setAgeFrom] = useState<number>(10);
   const [ageTo, setAgeTo] = useState<number>(55);
+  const [isLight, setIsLight] = useState(document.documentElement.classList.contains('light-theme'));
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string; color?: string } | null>(null);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsLight(document.documentElement.classList.contains('light-theme'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const metricColors: Record<Metric, string> = isLight
+    ? { births: '#be185d', pctCesarea: '#6d28d9', pctBaixoPeso: '#0e7490', pctPrematuro: '#15803d' }
+    : { births: '#ff6b9d', pctCesarea: '#b48cff', pctBaixoPeso: '#7dd3fc', pctPrematuro: '#86efac' };
 
   const toggleMetric = (m: Metric) => {
     setMetrics(prev => {
@@ -296,14 +309,22 @@ const DashboardEnhanced = () => {
       metrics: metrics.map(m => ({
         key: m,
         value: Math.round(row.values[m] * 10) / 10,
-        color: METRIC_COLORS[m],
+        color: metricColors[m],
         label: metricLabels[m][lang] || metricLabels[m]['pt'],
       })),
     }));
   }, [chartData, metrics, lang]);
 
   const multiMetric = metrics.length > 1;
-  const autoChart: ChartType = multiMetric ? 'grouped' : chartType;
+
+  const validChartTypes: Record<boolean, ChartType[]> = {
+    false: ['bar', 'horizontal', 'grouped', 'stacked', 'line', 'donut', 'table'],
+    true: ['grouped', 'stacked', 'line', 'table'],
+  };
+
+  const autoChart: ChartType = multiMetric
+    ? (validChartTypes[true].includes(chartType) ? chartType : 'grouped')
+    : chartType;
 
   const getMaxVal = () => {
     let max = 0;
@@ -344,9 +365,9 @@ const DashboardEnhanced = () => {
     return parts.join(' × ') || 'Comparativo';
   };
 
-  const handleMouseEnter = (e: React.MouseEvent, content: string) => {
+  const handleMouseEnter = (e: React.MouseEvent, content: string, color?: string) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    setTooltip({ x: rect.left + rect.width / 2, y: rect.top - 10, content });
+    setTooltip({ x: rect.left + rect.width / 2, y: rect.top - 10, content, color });
   };
 
   const handleMouseLeave = () => {
@@ -533,9 +554,14 @@ const DashboardEnhanced = () => {
 
   const renderTooltip = () => {
     if (!tooltip) return null;
+    const parts = tooltip.content.split(':');
+    const label = parts[0]?.trim() || '';
+    const value = parts.slice(1).join(':').trim() || '';
     return (
       <div className="chart-tooltip" style={{ position: 'fixed', left: tooltip.x, top: tooltip.y, transform: 'translate(-50%, -100%)', pointerEvents: 'none' }}>
-        {tooltip.content}
+        {tooltip.color && <span className="tooltip-dot" style={{ backgroundColor: tooltip.color, color: tooltip.color }} />}
+        <span className="tooltip-label">{label}</span>
+        <span className="tooltip-value">{value}</span>
       </div>
     );
   };
@@ -725,7 +751,7 @@ const DashboardEnhanced = () => {
               <div className="control-buttons">
                 {(Object.keys(metricLabels) as Metric[]).map(m => (
                   <button key={m} className={`control-btn ${metrics.includes(m) ? 'active' : ''}`} onClick={() => toggleMetric(m)}>
-                    <span className="metric-dot" style={{ background: METRIC_COLORS[m] }} />
+                    <span className="metric-dot" style={{ background: metricColors[m] }} />
                     {metricLabels[m][lang] || metricLabels[m]['pt']}
                   </button>
                 ))}
@@ -736,19 +762,22 @@ const DashboardEnhanced = () => {
               <label className="control-label">{t('dashboard.chart')}</label>
               <div className="control-buttons chart-type-btns">
                 {[
-                  { type: 'bar' as ChartType, icon: <BarChart3 size={15} />, blocked: multiMetric },
-                  { type: 'horizontal' as ChartType, icon: <TrendingUp size={15} />, blocked: multiMetric },
-                  { type: 'grouped' as ChartType, icon: <LayoutGrid size={15} />, blocked: false },
-                  { type: 'stacked' as ChartType, icon: <Layers size={15} />, blocked: false },
-                  { type: 'line' as ChartType, icon: <GitCompare size={15} />, blocked: false },
-                  { type: 'donut' as ChartType, icon: <CircleDot size={15} />, blocked: multiMetric },
-                  { type: 'table' as ChartType, icon: <Table2 size={15} />, blocked: false },
-                ].map(c => (
-                  <button key={c.type} className={`control-btn chart-btn ${autoChart === c.type ? 'active' : ''} ${c.blocked ? 'blocked' : ''}`}
-                    onClick={() => !c.blocked && setChartType(c.type)} disabled={c.blocked}>
-                    {c.icon}
-                  </button>
-                ))}
+                  { type: 'bar' as ChartType, icon: <BarChart3 size={15} /> },
+                  { type: 'horizontal' as ChartType, icon: <TrendingUp size={15} /> },
+                  { type: 'grouped' as ChartType, icon: <LayoutGrid size={15} /> },
+                  { type: 'stacked' as ChartType, icon: <Layers size={15} /> },
+                  { type: 'line' as ChartType, icon: <GitCompare size={15} /> },
+                  { type: 'donut' as ChartType, icon: <CircleDot size={15} /> },
+                  { type: 'table' as ChartType, icon: <Table2 size={15} /> },
+                ].map(c => {
+                  const isBlocked = multiMetric && !validChartTypes[true].includes(c.type);
+                  return (
+                    <button key={c.type} className={`control-btn chart-btn ${autoChart === c.type ? 'active' : ''} ${isBlocked ? 'blocked' : ''}`}
+                      onClick={() => setChartType(c.type)}>
+                      {c.icon}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -792,7 +821,7 @@ const DashboardEnhanced = () => {
                 <div className="chart-legend">
                   {metrics.map(m => (
                     <div key={m} className="legend-item">
-                      <span className="legend-dot" style={{ background: METRIC_COLORS[m] }} />
+                      <span className="legend-dot" style={{ background: metricColors[m] }} />
                       <span>{metricLabels[m][lang] || metricLabels[m]['pt']}</span>
                     </div>
                   ))}
@@ -804,7 +833,7 @@ const DashboardEnhanced = () => {
                   <div className="bar-chart">
                     {filteredChartData.map((row, i) => (
                       <div key={`${row.group}-${row.label}`} className={`bar-col ${row.onClick ? 'clickable' : ''}`} onClick={row.onClick}
-                        onMouseEnter={(e) => handleMouseEnter(e, `${row.label}: ${row.metrics[0].value}`)} onMouseLeave={handleMouseLeave}>
+                        onMouseEnter={(e) => handleMouseEnter(e, `${row.label}: ${row.metrics[0].value}`, row.metrics[0].color)} onMouseLeave={handleMouseLeave}>
                         <div className="bar-value">{row.metrics[0].value > 100 ? row.metrics[0].value.toLocaleString() : row.metrics[0].value}</div>
                         <div className="bar-track">
                           <motion.div className="bar-fill" style={{ backgroundColor: row.metrics[0].color }} initial={{ height: 0 }}
@@ -820,7 +849,7 @@ const DashboardEnhanced = () => {
                   <div className="hbar-chart">
                     {filteredChartData.map((row, i) => (
                       <div key={`${row.group}-${row.label}`} className={`hbar-row ${row.onClick ? 'clickable' : ''}`} onClick={row.onClick}
-                        onMouseEnter={(e) => handleMouseEnter(e, `${row.label}: ${row.metrics[0].value}`)} onMouseLeave={handleMouseLeave}>
+                        onMouseEnter={(e) => handleMouseEnter(e, `${row.label}: ${row.metrics[0].value}`, row.metrics[0].color)} onMouseLeave={handleMouseLeave}>
                         <div className="hbar-label">{row.label}</div>
                         <div className="hbar-track">
                           <motion.div className="hbar-fill" style={{ backgroundColor: row.metrics[0].color }} initial={{ width: 0 }}
@@ -839,7 +868,7 @@ const DashboardEnhanced = () => {
                         <div className="grouped-bars">
                           {row.metrics.map((m, j) => (
                             <div key={m.key} className="grouped-bar-wrapper"
-                              onMouseEnter={(e) => handleMouseEnter(e, `${row.label} - ${m.label}: ${m.value}`)} onMouseLeave={handleMouseLeave}>
+                              onMouseEnter={(e) => handleMouseEnter(e, `${m.label}: ${m.value}`, m.color)} onMouseLeave={handleMouseLeave}>
                               <div className="bar-value small">{m.value > 100 ? m.value.toLocaleString() : m.value}</div>
                               <div className="bar-track narrow">
                                 <motion.div className="bar-fill" style={{ backgroundColor: m.color }} initial={{ height: 0 }}
@@ -866,7 +895,7 @@ const DashboardEnhanced = () => {
                               {row.metrics.map((m, j) => (
                                 <motion.div key={m.key} className="stacked-segment" style={{ backgroundColor: m.color }} initial={{ width: 0 }}
                                   whileInView={{ width: `${(m.value / total) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.06 + j * 0.04 }}
-                                  title={`${m.label}: ${m.value}`} />
+                                  onMouseEnter={(e) => handleMouseEnter(e, `${m.label}: ${m.value}`, m.color)} onMouseLeave={handleMouseLeave} />
                               ))}
                             </div>
                           </div>
@@ -879,26 +908,36 @@ const DashboardEnhanced = () => {
 
                 {autoChart === 'line' && (
                   <div className="line-chart-wrapper">
-                    <svg viewBox={`0 0 ${filteredChartData.length * 80 + 40} 260`} className="line-chart-svg">
+                    <svg viewBox={`0 0 ${filteredChartData.length * 80 + 40} 210`} className="line-chart-svg">
                       {[0, 0.25, 0.5, 0.75, 1].map(frac => (
-                        <line key={frac} x1="30" y1={50 + (1 - frac) * 170} x2={filteredChartData.length * 80 + 30} y2={50 + (1 - frac) * 170} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                        <line key={frac} x1="30" y1={30 + (1 - frac) * 140} x2={filteredChartData.length * 80 + 30} y2={30 + (1 - frac) * 140} stroke={isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.06)'} strokeWidth="1" />
                       ))}
-                      {metrics.map((m) => {
+                      {metrics.map((m, metricIdx) => {
+                        const metricOffsetY = (metricIdx - (metrics.length - 1) / 2) * 4;
                         const points = filteredChartData.map((row, i) => {
                           const val = row.metrics.find(rm => rm.key === m)?.value || 0;
-                          return `${50 + i * 80},${50 + (1 - val / maxVal) * 170}`;
+                          return `${50 + i * 80},${30 + (1 - val / maxVal) * 140 + metricOffsetY}`;
                         }).join(' ');
+                        const getLabelOffset = (metric: Metric) => {
+                          if (metric === 'births') return { dx: 0, dy: -8, anchor: 'middle' as const };
+                          if (metric === 'pctCesarea') return { dx: -10, dy: -2, anchor: 'end' as const };
+                          if (metric === 'pctBaixoPeso') return { dx: 10, dy: 6, anchor: 'start' as const };
+                          return { dx: 0, dy: 12, anchor: 'middle' as const };
+                        };
+                        const offset = getLabelOffset(m);
                         return (
                           <g key={m}>
-                            <polyline points={points} fill="none" stroke={METRIC_COLORS[m]} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <polyline points={points} fill="none" stroke={metricColors[m]} strokeWidth={isLight ? "5" : "4"} strokeLinecap="round" strokeLinejoin="round" opacity={isLight ? "0.5" : "0.3"} />
+                            <polyline points={points} fill="none" stroke={metricColors[m]} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             {filteredChartData.map((row, i) => {
                               const val = row.metrics.find(rm => rm.key === m)?.value || 0;
                               const x = 50 + i * 80;
-                              const y = 50 + (1 - val / maxVal) * 170;
+                              const y = 30 + (1 - val / maxVal) * 140 + metricOffsetY;
                               return (
                                 <g key={i}>
-                                  <circle cx={x} cy={y} r="5" fill={METRIC_COLORS[m]} className={row.onClick ? 'clickable' : ''} onClick={row.onClick} />
-                                  <text x={x} y={y - 12} fill="var(--text-primary)" fontSize="10" textAnchor="middle" fontWeight="700">
+                                  <circle cx={x} cy={y} r="4" fill={metricColors[m]} opacity={isLight ? "0.5" : "0.35"} />
+                                  <circle cx={x} cy={y} r="2.5" fill={metricColors[m]} className={row.onClick ? 'clickable' : ''} onClick={row.onClick} />
+                                  <text x={x + offset.dx} y={y + offset.dy} fill={metricColors[m]} fontSize="6" textAnchor={offset.anchor} fontWeight="700">
                                     {val > 100 ? val.toLocaleString() : val}
                                   </text>
                                 </g>
@@ -908,7 +947,7 @@ const DashboardEnhanced = () => {
                         );
                       })}
                       {filteredChartData.map((row, i) => (
-                        <text key={i} x={50 + i * 80} y={245} fill="var(--text-secondary)" fontSize="11" textAnchor="middle" fontWeight="600">{row.label}</text>
+                        <text key={i} x={50 + i * 80} y={195} fill="var(--text-secondary)" fontSize="8" textAnchor="middle" fontWeight="600">{row.label}</text>
                       ))}
                     </svg>
                   </div>
@@ -928,7 +967,8 @@ const DashboardEnhanced = () => {
                               const dashLen = pct * circumference;
                               const dashOff = -cumAngle / 360 * circumference;
                               cumAngle += pct * 360;
-                              return <circle key={m.key} cx={cx} cy={cy} r={r} fill="none" stroke={m.color} strokeWidth="22" strokeDasharray={`${dashLen} ${circumference - dashLen}`} strokeDashoffset={-dashOff} strokeLinecap="butt" />;
+                              return <circle key={m.key} cx={cx} cy={cy} r={r} fill="none" stroke={m.color} strokeWidth="22" strokeDasharray={`${dashLen} ${circumference - dashLen}`} strokeDashoffset={-dashOff} strokeLinecap="butt"
+                                onMouseEnter={(e) => handleMouseEnter(e, `${m.label}: ${m.value > 100 ? Math.round(m.value).toLocaleString() : m.value}`, m.color)} onMouseLeave={handleMouseLeave} style={{ cursor: 'pointer' }} />;
                             })}
                             <text x={cx} y={cy - 6} fill="var(--text-primary)" fontSize="13" textAnchor="middle" fontWeight="800">{row.label}</text>
                             <text x={cx} y={cy + 12} fill="var(--text-secondary)" fontSize="9" textAnchor="middle">{total > 100 ? Math.round(total).toLocaleString() : total.toFixed(1)}</text>
@@ -946,7 +986,7 @@ const DashboardEnhanced = () => {
                         <tr>
                           <th>{t('dashboard.category')}</th>
                           {metrics.map(m => (
-                            <th key={m}><span className="th-dot" style={{ background: METRIC_COLORS[m] }} />{metricLabels[m][lang] || metricLabels[m]['pt']}</th>
+                            <th key={m}><span className="th-dot" style={{ background: metricColors[m] }} />{metricLabels[m][lang] || metricLabels[m]['pt']}</th>
                           ))}
                         </tr>
                       </thead>

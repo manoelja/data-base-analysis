@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Heart, FileText, ChevronDown, Activity, Target, Globe, AlertCircle } from 'lucide-react';
 import { cleaningStats } from '../../data/analysis';
@@ -48,7 +48,7 @@ const About = () => {
         >
           <motion.div className="about-info" variants={itemVariants}>
             <div
-              className={`about-card-main cyber-card ${isMainExpanded ? 'expanded' : ''}`}
+              className="about-card-main cyber-card"
               onClick={() => setIsMainExpanded(!isMainExpanded)}
               style={{ cursor: 'pointer' }}
             >
@@ -64,24 +64,46 @@ const About = () => {
                 </div>
               </div>
 
-              <p className="about-text">
-                {t('about.description')}
-              </p>
+              <div className="about-content-wrapper">
+                <AnimatePresence mode="wait">
+                  {!isMainExpanded ? (
+                    <motion.div
+                      key="preview"
+                      className="about-preview"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <p className="about-description-text">
+                        Atividade avaliativa de Banco de Dados que integra importação de dados em R, diagnóstico de qualidade, modelo relacional, manipulação com dplyr e o pipeline SQL→R com DBI/RSQlite.
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="details"
+                      className="about-details-expanded"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <div className="profile-deep-dive">
+                        <p className="deep-text">
+                          <span style={{ color: 'var(--accent-color)' }}>&gt;</span> {t('about.detailed_profile')}
+                        </p>
 
-              <div className="about-details-expanded">
-                <div className="profile-deep-dive">
-                  <p className="deep-text">
-                    <span style={{ color: 'var(--accent-color)' }}>&gt;</span> {t('about.detailed_profile')}
-                  </p>
-
-                  <div className="mission-box">
-                    <div className="mission-header">
-                      <Target size={16} color="var(--accent-color)" />
-                      <span className="card-label">{t('about.mission_objective')}</span>
-                    </div>
-                    <p className="mission-body">{t('about.mission_text')}</p>
-                  </div>
-                </div>
+                        <div className="mission-box">
+                          <div className="mission-header">
+                            <Target size={16} color="var(--accent-color)" />
+                            <span className="card-label">{t('about.mission_objective')}</span>
+                          </div>
+                          <p className="mission-body">{t('about.mission_text')}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div className="about-details-list">
@@ -105,7 +127,7 @@ const About = () => {
 
           <motion.div className="about-education" variants={itemVariants}>
             <div
-              className={`edu-card-modern cyber-card ${expandedEdu === 'cert1' ? 'expanded' : ''}`}
+              className="edu-card-modern cyber-card"
               onClick={() => toggleEdu('cert1')}
               style={{ cursor: 'pointer' }}
             >
@@ -124,18 +146,40 @@ const About = () => {
                 </div>
               </div>
 
-              <div className="edu-details-expanded">
-                <div className="edu-institution">
-                  <span className="inst-name">{t('about.status_verified')}</span>
-                  <span className="inst-full">{t('about.graduation_inst')}</span>
-                </div>
+              <div className="edu-content-wrapper">
+                <AnimatePresence mode="wait">
+                  {expandedEdu !== 'cert1' ? (
+                    <motion.div
+                      key="preview"
+                      className="edu-badge"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      6.080 ROWS
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="detail"
+                      className="edu-details-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <div className="edu-institution">
+                        <span className="inst-name">{t('about.status_verified')}</span>
+                        <span className="inst-full">{t('about.graduation_inst')}</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-
-              {expandedEdu !== 'cert1' && <div className="edu-badge">6.080 ROWS</div>}
             </div>
 
             <div
-              className={`edu-card-modern cyber-card ${expandedEdu === 'cert2' ? 'expanded' : ''}`}
+              className="edu-card-modern cyber-card"
               onClick={() => toggleEdu('cert2')}
               style={{ cursor: 'pointer' }}
             >
@@ -154,14 +198,36 @@ const About = () => {
                 </div>
               </div>
 
-              <div className="edu-details-expanded">
-                <div className="edu-institution">
-                  <span className="inst-name">{t('about.status_authorized')}</span>
-                  <span className="inst-full">{t('about.postgrad_inst')}</span>
-                </div>
+              <div className="edu-content-wrapper">
+                <AnimatePresence mode="wait">
+                  {expandedEdu !== 'cert2' ? (
+                    <motion.div
+                      key="preview"
+                      className="edu-badge"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      SQL → R
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="detail"
+                      className="edu-details-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <div className="edu-institution">
+                        <span className="inst-name">{t('about.status_authorized')}</span>
+                        <span className="inst-full">{t('about.postgrad_inst')}</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-
-              {expandedEdu !== 'cert2' && <div className="edu-badge">SQL → R</div>}
             </div>
 
             <div className="mission-box about-alert-box">
