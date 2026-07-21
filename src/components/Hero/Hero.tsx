@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { MousePointer2, ChevronDown, Heart, Baby, Stethoscope, Activity } from 'lucide-react';

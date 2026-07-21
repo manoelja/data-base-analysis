@@ -62,14 +62,14 @@ const Dashboard = () => {
 
   const multiMetric = metrics.length > 1;
 
-  const validChartTypes: Record<boolean, ChartType[]> = {
+  const validChartTypes: Record<'true' | 'false', ChartType[]> = {
     false: ['bar', 'horizontal', 'grouped', 'stacked', 'line', 'donut', 'table'],
     true: ['grouped', 'stacked', 'line', 'table'],
   };
 
   const getAutoChart = (): ChartType => {
     if (multiMetric) {
-      return validChartTypes[true].includes(chartType) ? chartType : 'grouped';
+      return validChartTypes['true'].includes(chartType) ? chartType : 'grouped';
     }
     return chartType;
   };
@@ -271,7 +271,7 @@ const Dashboard = () => {
                   { type: 'donut' as ChartType, icon: <CircleDot size={15} />, tip: 'Donut' },
                   { type: 'table' as ChartType, icon: <Table2 size={15} />, tip: 'Tabela' },
                 ].map(c => {
-                  const isBlocked = multiMetric && !validChartTypes[true].includes(c.type);
+                  const isBlocked = multiMetric && !validChartTypes['true'].includes(c.type);
                   return (
                     <button
                       key={c.type}

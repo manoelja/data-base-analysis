@@ -1,18 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, Code, Database, Search, FileText, BarChart, Eye } from 'lucide-react';
 import { techStack } from '../../data/analysis';
 import './Skills.css';
-
-const iconMap: Record<string, React.ReactNode> = {
-  code: <Code size={18} />,
-  database: <Database size={18} />,
-  search: <Search size={18} />,
-  'file-text': <FileText size={18} />,
-  'bar-chart': <BarChart size={18} />,
-  eye: <Eye size={18} />,
-};
 
 const Skills = () => {
   const { t } = useTranslation();

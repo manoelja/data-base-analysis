@@ -14,13 +14,6 @@ type ChartType = 'bar' | 'horizontal' | 'grouped' | 'stacked' | 'line' | 'donut'
 type Metric = 'births' | 'pctCesarea' | 'pctBaixoPeso' | 'pctPrematuro';
 type PrimaryFilter = 'region' | 'year' | 'age' | 'sexo';
 
-const metricColors: Record<Metric, string> = {
-  births: '#ff6b9d',
-  pctCesarea: '#b48cff',
-  pctBaixoPeso: '#7dd3fc',
-  pctPrematuro: '#86efac',
-};
-
 const metricLabels: Record<Metric, Record<string, string>> = {
   births: { pt: 'Nascimentos', en: 'Births', es: 'Nacimientos' },
   pctCesarea: { pt: '% Cesáreas', en: '% C-Sections', es: '% Cesáreas' },
@@ -317,13 +310,13 @@ const DashboardEnhanced = () => {
 
   const multiMetric = metrics.length > 1;
 
-  const validChartTypes: Record<boolean, ChartType[]> = {
+  const validChartTypes: Record<'true' | 'false', ChartType[]> = {
     false: ['bar', 'horizontal', 'grouped', 'stacked', 'line', 'donut', 'table'],
     true: ['grouped', 'stacked', 'line', 'table'],
   };
 
   const autoChart: ChartType = multiMetric
-    ? (validChartTypes[true].includes(chartType) ? chartType : 'grouped')
+    ? (validChartTypes['true'].includes(chartType) ? chartType : 'grouped')
     : chartType;
 
   const getMaxVal = () => {
@@ -770,7 +763,7 @@ const DashboardEnhanced = () => {
                   { type: 'donut' as ChartType, icon: <CircleDot size={15} /> },
                   { type: 'table' as ChartType, icon: <Table2 size={15} /> },
                 ].map(c => {
-                  const isBlocked = multiMetric && !validChartTypes[true].includes(c.type);
+                  const isBlocked = multiMetric && !validChartTypes['true'].includes(c.type);
                   return (
                     <button key={c.type} className={`control-btn chart-btn ${autoChart === c.type ? 'active' : ''} ${isBlocked ? 'blocked' : ''}`}
                       onClick={() => setChartType(c.type)}>
