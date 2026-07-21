@@ -120,11 +120,29 @@
   border: 1px solid var(--card-border);
   border-radius: var(--cyber-radius);
   overflow: hidden;
+  box-shadow: none !important;
+  transition: border-color 0.3s ease;
+}
+
+.footer-terminal:hover {
+  border-color: var(--accent-color);
+}
+
+.footer-terminal:focus-within {
+  outline: none;
+}
+
+.footer-terminal *:focus-visible {
+  outline: none;
 }
 
 html.light-theme .footer-terminal {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(233, 30, 138, 0.12);
+}
+
+html.light-theme .footer-terminal:hover {
+  border-color: var(--accent-color);
 }
 
 .terminal-header {
