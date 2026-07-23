@@ -1,17 +1,7 @@
 .footer {
   position: relative;
   padding: 6rem 0 0;
-}
-
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 1px;
-  background: var(--card-border);
+  background: transparent;
 }
 
 .footer-content {
@@ -19,12 +9,14 @@
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   padding-bottom: 3rem;
+  align-items: start;
 }
 
 .footer-title {
   font-size: 2rem;
   font-weight: 800;
   background: var(--title-gradient);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
@@ -120,6 +112,7 @@
   border: 1px solid var(--card-border);
   border-radius: var(--cyber-radius);
   overflow: hidden;
+  padding: 1.5rem;
   box-shadow: none !important;
   transition: border-color 0.3s ease;
 }
@@ -160,8 +153,8 @@ html.light-theme .terminal-header {
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 
@@ -236,9 +229,9 @@ html.light-theme .shell-btn.active {
 
 .terminal-content {
   padding: 1rem;
-  min-height: 250px;
-  max-height: 350px;
+  max-height: 300px;
   overflow-y: auto;
+  overflow-x: auto;
   font-family: 'Courier New', monospace;
   font-size: 0.75rem;
   line-height: 1.6;
@@ -249,8 +242,7 @@ html.light-theme .terminal-content {
 }
 
 .terminal-line {
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
   margin-bottom: 0.2rem;
 }
 
@@ -301,7 +293,7 @@ html.light-theme .terminal-input::placeholder {
 .terminal-cursor {
   display: inline-block;
   width: 8px;
-  height: 14px;
+  height: 16px;
   background: var(--accent-color);
   animation: blink 1s infinite;
   margin-left: 2px;
@@ -310,17 +302,6 @@ html.light-theme .terminal-input::placeholder {
 .footer-bottom {
   position: relative;
   padding: 1.5rem 0;
-}
-
-.footer-bottom::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 1px;
-  background: var(--card-border);
 }
 
 .footer-bottom-content {
