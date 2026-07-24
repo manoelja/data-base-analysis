@@ -312,7 +312,7 @@ $ APGAR5         <int> 8, 8, 10, 9, 8`, type: 'success' },
                 <Github size={20} />
               </motion.a>
               <motion.a
-                href="https://www.linkedin.com/in/manoel-ara%C3%BAjo-79b62239b"
+                href="https://www.linkedin.com/in/manoelja"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="social-icon-btn"
