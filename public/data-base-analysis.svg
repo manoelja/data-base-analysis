@@ -1,4 +1,296 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <text x="50" y="42" font-family="serif" font-size="36" text-anchor="middle">🧸</text>
-  <text x="50" y="78" font-family="monospace" font-size="11" fill="#ff6b9d" text-anchor="middle" font-weight="bold">DB Analysis</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <!-- Center glow -->
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b9d" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#ff6b9d" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#ff6b9d" stop-opacity="0" />
+    </radialGradient>
+    
+    <!-- Cube gradients - Top face -->
+    <linearGradient id="cubePinkTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b9d" />
+      <stop offset="100%" stop-color="#ff4785" />
+    </linearGradient>
+    <linearGradient id="cubeCyanTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d2d3" />
+      <stop offset="100%" stop-color="#00b5b6" />
+    </linearGradient>
+    <linearGradient id="cubePurpleTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a29bfe" />
+      <stop offset="100%" stop-color="#8a7cf0" />
+    </linearGradient>
+    <linearGradient id="cubeGreenTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#55efc4" />
+      <stop offset="100%" stop-color="#00cec9" />
+    </linearGradient>
+    <linearGradient id="cubeOrangeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdcb6e" />
+      <stop offset="100%" stop-color="#f39c12" />
+    </linearGradient>
+    <linearGradient id="cubeBlueTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#74b9ff" />
+      <stop offset="100%" stop-color="#48b5e0" />
+    </linearGradient>
+    <linearGradient id="cubeRedTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7675" />
+      <stop offset="100%" stop-color="#d63031" />
+    </linearGradient>
+    <linearGradient id="cubeYellowTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffeaa7" />
+      <stop offset="100%" stop-color="#fdcb6e" />
+    </linearGradient>
+    <linearGradient id="cubeTealTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#81ecec" />
+      <stop offset="100%" stop-color="#00cec9" />
+    </linearGradient>
+    <linearGradient id="cubeSilverTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dfe6e9" />
+      <stop offset="100%" stop-color="#b2bec3" />
+    </linearGradient>
+
+    <!-- Scanning line gradient -->
+    <linearGradient id="scanLine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b9d" stop-opacity="0" />
+      <stop offset="50%" stop-color="#ff6b9d" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ff6b9d" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Orbit paths (dashed ellipses for depth) -->
+  <g opacity="0.15" fill="none" stroke-width="0.6" stroke-dasharray="3,4">
+    <ellipse cx="100" cy="100" rx="78" ry="66" stroke="#ff6b9d" />
+    <ellipse cx="100" cy="100" rx="66" ry="78" stroke="#00d2d3" />
+    <ellipse cx="100" cy="100" rx="95" ry="83" stroke="#a29bfe" />
+    <ellipse cx="100" cy="100" rx="57" ry="45" stroke="#55efc4" />
+    <ellipse cx="100" cy="100" rx="90" ry="95" stroke="#fdcb6e" />
+    <ellipse cx="100" cy="100" rx="71" ry="62" stroke="#74b9ff" />
+    <ellipse cx="100" cy="100" rx="50" ry="41" stroke="#ff7675" />
+    <ellipse cx="100" cy="100" rx="36" ry="30" stroke="#ffeaa7" />
+    <ellipse cx="100" cy="100" rx="59" ry="54" stroke="#81ecec" />
+    <ellipse cx="100" cy="100" rx="33" ry="38" stroke="#dfe6e9" />
+  </g>
+
+  <!-- Center pulsing glow -->
+  <circle cx="100" cy="100" r="65" fill="url(#centerGlow)">
+    <animate attributeName="r" values="50;72;50" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- ==================== ORBITING DATA CUBES ==================== -->
+
+  <!-- Cube 1 - Pink -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="10s" repeatCount="indefinite" />
+    <g transform="translate(100,34)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="10s" repeatCount="indefinite" />
+        <polygon points="-3,-2 0,-4 3,-2 0,1" fill="url(#cubePinkTop)" opacity="0.95" />
+        <polygon points="-3,-2 0,1 0,4 -3,1" fill="#c44569" opacity="0.9" />
+        <polygon points="0,1 3,-2 3,1 0,4" fill="#e05676" opacity="0.9" />
+        <polyline points="-3,-2 0,-4 3,-2" fill="none" stroke="#ffb8d0" stroke-width="0.3" opacity="0.6" />
+        <polyline points="3,-2 3,1" fill="none" stroke="#ffb8d0" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 2 - Cyan -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="36 100 100" to="396 100 100" dur="8s" repeatCount="indefinite" />
+    <g transform="translate(100,22)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="8s" repeatCount="indefinite" />
+        <polygon points="-3,-2 0,-4 3,-2 0,1" fill="url(#cubeCyanTop)" opacity="0.95" />
+        <polygon points="-3,-2 0,1 0,4 -3,1" fill="#01a3a4" opacity="0.9" />
+        <polygon points="0,1 3,-2 3,1 0,4" fill="#00b4b5" opacity="0.9" />
+        <polyline points="-3,-2 0,-4 3,-2" fill="none" stroke="#7ff5f5" stroke-width="0.3" opacity="0.6" />
+        <polyline points="3,-2 3,1" fill="none" stroke="#7ff5f5" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 3 - Purple -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="72 100 100" to="432 100 100" dur="12s" repeatCount="indefinite" />
+    <g transform="translate(100,17)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="12s" repeatCount="indefinite" />
+        <polygon points="-2.5,-1.5 0,-3.5 2.5,-1.5 0,1" fill="url(#cubePurpleTop)" opacity="0.95" />
+        <polygon points="-2.5,-1.5 0,1 0,3 -2.5,0.5" fill="#6c5ce7" opacity="0.9" />
+        <polygon points="0,1 2.5,-1.5 2.5,0.5 0,3" fill="#8a7cf0" opacity="0.9" />
+        <polyline points="-2.5,-1.5 0,-3.5 2.5,-1.5" fill="none" stroke="#d0c9ff" stroke-width="0.3" opacity="0.6" />
+        <polyline points="2.5,-1.5 2.5,0.5" fill="none" stroke="#d0c9ff" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 4 - Green -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="108 100 100" to="468 100 100" dur="7s" repeatCount="indefinite" />
+    <g transform="translate(100,55)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="7s" repeatCount="indefinite" />
+        <polygon points="-2.5,-1.5 0,-3.5 2.5,-1.5 0,1" fill="url(#cubeGreenTop)" opacity="0.95" />
+        <polygon points="-2.5,-1.5 0,1 0,3 -2.5,0.5" fill="#00b894" opacity="0.9" />
+        <polygon points="0,1 2.5,-1.5 2.5,0.5 0,3" fill="#00cec9" opacity="0.9" />
+        <polyline points="-2.5,-1.5 0,-3.5 2.5,-1.5" fill="none" stroke="#a0f5df" stroke-width="0.3" opacity="0.6" />
+        <polyline points="2.5,-1.5 2.5,0.5" fill="none" stroke="#a0f5df" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 5 - Orange -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="144 100 100" to="504 100 100" dur="15s" repeatCount="indefinite" />
+    <g transform="translate(100,5)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="15s" repeatCount="indefinite" />
+        <polygon points="-3,-2 0,-4 3,-2 0,1" fill="url(#cubeOrangeTop)" opacity="0.95" />
+        <polygon points="-3,-2 0,1 0,4 -3,1" fill="#e17055" opacity="0.9" />
+        <polygon points="0,1 3,-2 3,1 0,4" fill="#f39c12" opacity="0.9" />
+        <polyline points="-3,-2 0,-4 3,-2" fill="none" stroke="#fee5b8" stroke-width="0.3" opacity="0.6" />
+        <polyline points="3,-2 3,1" fill="none" stroke="#fee5b8" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 6 - Blue -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="180 100 100" to="540 100 100" dur="9s" repeatCount="indefinite" />
+    <g transform="translate(100,38)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="9s" repeatCount="indefinite" />
+        <polygon points="-2.5,-1.5 0,-3.5 2.5,-1.5 0,1" fill="url(#cubeBlueTop)" opacity="0.95" />
+        <polygon points="-2.5,-1.5 0,1 0,3 -2.5,0.5" fill="#0984e3" opacity="0.9" />
+        <polygon points="0,1 2.5,-1.5 2.5,0.5 0,3" fill="#48b5e0" opacity="0.9" />
+        <polyline points="-2.5,-1.5 0,-3.5 2.5,-1.5" fill="none" stroke="#b8d9ff" stroke-width="0.3" opacity="0.6" />
+        <polyline points="2.5,-1.5 2.5,0.5" fill="none" stroke="#b8d9ff" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 7 - Red -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="216 100 100" to="576 100 100" dur="6s" repeatCount="indefinite" />
+    <g transform="translate(100,59)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="6s" repeatCount="indefinite" />
+        <polygon points="-3,-2 0,-4 3,-2 0,1" fill="url(#cubeRedTop)" opacity="0.95" />
+        <polygon points="-3,-2 0,1 0,4 -3,1" fill="#c0392b" opacity="0.9" />
+        <polygon points="0,1 3,-2 3,1 0,4" fill="#e74c3c" opacity="0.9" />
+        <polyline points="-3,-2 0,-4 3,-2" fill="none" stroke="#f5a0a0" stroke-width="0.3" opacity="0.6" />
+        <polyline points="3,-2 3,1" fill="none" stroke="#f5a0a0" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 8 - Yellow -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="252 100 100" to="612 100 100" dur="5s" repeatCount="indefinite" />
+    <g transform="translate(100,70)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="5s" repeatCount="indefinite" />
+        <polygon points="-2.5,-1.5 0,-3.5 2.5,-1.5 0,1" fill="url(#cubeYellowTop)" opacity="0.95" />
+        <polygon points="-2.5,-1.5 0,1 0,3 -2.5,0.5" fill="#e1b12c" opacity="0.9" />
+        <polygon points="0,1 2.5,-1.5 2.5,0.5 0,3" fill="#f0c940" opacity="0.9" />
+        <polyline points="-2.5,-1.5 0,-3.5 2.5,-1.5" fill="none" stroke="#fff3d0" stroke-width="0.3" opacity="0.6" />
+        <polyline points="2.5,-1.5 2.5,0.5" fill="none" stroke="#fff3d0" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 9 - Teal -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="288 100 100" to="648 100 100" dur="11s" repeatCount="indefinite" />
+    <g transform="translate(100,46)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="11s" repeatCount="indefinite" />
+        <polygon points="-3,-2 0,-4 3,-2 0,1" fill="url(#cubeTealTop)" opacity="0.95" />
+        <polygon points="-3,-2 0,1 0,4 -3,1" fill="#00b894" opacity="0.9" />
+        <polygon points="0,1 3,-2 3,1 0,4" fill="#00cec9" opacity="0.9" />
+        <polyline points="-3,-2 0,-4 3,-2" fill="none" stroke="#b0f0f0" stroke-width="0.3" opacity="0.6" />
+        <polyline points="3,-2 3,1" fill="none" stroke="#b0f0f0" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Cube 10 - Silver -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="324 100 100" to="684 100 100" dur="4.5s" repeatCount="indefinite" />
+    <g transform="translate(100,62)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="4.5s" repeatCount="indefinite" />
+        <polygon points="-1.5,-1 0,-2.5 1.5,-1 0,1" fill="url(#cubeSilverTop)" opacity="0.95" />
+        <polygon points="-1.5,-1 0,1 0,2.5 -1.5,0.5" fill="#636e72" opacity="0.9" />
+        <polygon points="0,1 1.5,-1 1.5,0.5 0,2.5" fill="#b2bec3" opacity="0.9" />
+        <polyline points="-1.5,-1 0,-2.5 1.5,-1" fill="none" stroke="#f0f0f0" stroke-width="0.3" opacity="0.6" />
+        <polyline points="1.5,-1 1.5,0.5" fill="none" stroke="#f0f0f0" stroke-width="0.3" opacity="0.4" />
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== FLOATING DATA PARTICLES ==================== -->
+  
+  <g opacity="0.7">
+    <!-- Particle 1 -->
+    <circle cx="0" cy="0" r="3.5" fill="#ff6b9d">
+      <animateMotion path="M100,100 Q160,40 180,90 Q165,140 100,100" dur="6s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Particle 2 -->
+    <circle cx="0" cy="0" r="2.5" fill="#00d2d3">
+      <animateMotion path="M100,100 Q40,40 20,90 Q35,140 100,100" dur="5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Particle 3 -->
+    <circle cx="0" cy="0" r="2.8" fill="#a29bfe">
+      <animateMotion path="M100,100 Q65,20 100,10 Q135,20 100,100" dur="7s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Particle 4 -->
+    <circle cx="0" cy="0" r="2.5" fill="#55efc4">
+      <animateMotion path="M100,100 Q135,180 100,190 Q65,180 100,100" dur="5.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.8s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Particle 5 -->
+    <circle cx="0" cy="0" r="3" fill="#fdcb6e">
+      <animateMotion path="M100,100 Q170,65 175,115 Q155,155 100,100" dur="8s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.1;0.6;0.1" dur="4s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Particle 6 -->
+    <circle cx="0" cy="0" r="2" fill="#74b9ff">
+      <animateMotion path="M100,100 Q30,65 25,115 Q45,155 100,100" dur="6.5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3.2s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- ==================== CENTER CONTENT ==================== -->
+  <g>
+    <!-- Subtle ring around the icon -->
+    <circle cx="100" cy="100" r="42" fill="none" stroke="#ff6b9d" stroke-width="1.8" opacity="0.85">
+      <animate attributeName="r" values="40;46;40" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="stroke-width" values="1.5;2.5;1.5" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="3s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Teddy bear icon (centralizado verticalmente no anel) -->
+    <text x="100" y="100" font-family="serif" font-size="50" text-anchor="middle" dominant-baseline="central">🧸</text>
+    
+    <!-- "DB Analysis" text -->
+    <text x="100" y="158" font-family="monospace" font-size="17" fill="#ff6b9d" text-anchor="middle" font-weight="bold" letter-spacing="1.5">
+      DB Analysis
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+    </text>
+  </g>
+
+  <!-- ==================== SCANNING LINE EFFECT ==================== -->
+  <rect x="4" y="-12" width="192" height="12" fill="url(#scanLine)" opacity="0.5">
+    <animate attributeName="y" values="-12;200" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0;0.5;0" dur="4s" repeatCount="indefinite" />
+  </rect>
 </svg>
