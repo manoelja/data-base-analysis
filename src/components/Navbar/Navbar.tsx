@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isLight, setIsLight] = useState(localStorage.getItem('theme') === 'light');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const activeSection = useActiveSection(['hero', 'about', 'skills', 'projects', 'dashboard', 'contact']);
+  const activeSection = useActiveSection(['hero', 'about', 'skills', 'projects', 'dashboard', 'predictive', 'contact']);
 
   useEffect(() => {
     let ticking = false;
@@ -55,6 +55,7 @@ const Navbar = () => {
     { id: 'skills', label: t('nav.skills') },
     { id: 'projects', label: t('nav.projects') },
     { id: 'dashboard', label: t('nav.dashboard') },
+    { id: 'predictive', label: t('nav.predictive') },
     { id: 'contact', label: t('nav.contact') },
   ];
 
