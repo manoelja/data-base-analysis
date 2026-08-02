@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Heart, FileText, ChevronDown, Activity, Target, Globe, AlertCircle } from 'lucide-react';
+import { Heart, FileText, ChevronDown, Activity, Target, Globe, AlertCircle, Download, Image as ImageIcon } from 'lucide-react';
 import { cleaningStats } from '../../data/analysis';
 import './About.css';
 
@@ -238,6 +238,44 @@ const About = () => {
               <p className="about-alert-body">{t('about.pipeline_alert')}</p>
             </div>
           </motion.div>
+        </motion.div>
+
+        {/* Documentação para download */}
+        <motion.div
+          className="about-downloads"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="downloads-header">
+            <h3 className="downloads-title">{t('about.docs_title')}</h3>
+            <p className="downloads-subtitle">{t('about.docs_subtitle')}</p>
+          </div>
+
+          <div className="downloads-grid">
+            {[
+              { name: t('about.docs_readme_name'), desc: t('about.docs_readme_desc'), pdf: '/docs/README.pdf', png: '/docs/README.png' },
+              { name: t('about.docs_ref_name'), desc: t('about.docs_ref_desc'), pdf: '/docs/Referencia_Tecnica.pdf', png: '/docs/Referencia_Tecnica.png' },
+              { name: t('about.docs_ml_name'), desc: t('about.docs_ml_desc'), pdf: '/docs/Plano_ML.pdf', png: '/docs/Plano_ML.png' },
+            ].map((doc) => (
+              <div key={doc.name} className="download-card cyber-card">
+                <div className="download-card-head">
+                  <FileText size={18} />
+                  <span className="download-name">{doc.name}</span>
+                </div>
+                <p className="download-desc">{doc.desc}</p>
+                <div className="download-actions">
+                  <a className="download-btn" href={doc.pdf} download>
+                    <Download size={14} /> {t('about.download_pdf')}
+                  </a>
+                  <a className="download-btn download-btn-png" href={doc.png} download>
+                    <ImageIcon size={14} /> {t('about.download_png')}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

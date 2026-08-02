@@ -48,7 +48,17 @@ const resources = {
         status_verified: 'STATUS: VERIFICADO',
         status_authorized: 'STATUS: AUTORIZADO',
         pipeline_status_active: 'PIPELINE STATUS ATIVO',
-        pipeline_alert: '570 registros removidos na etapa de limpeza. Qualidade dos dados verificada.'
+        pipeline_alert: '570 registros removidos na etapa de limpeza. Qualidade dos dados verificada.',
+        docs_title: 'Documentação',
+        docs_subtitle: 'Baixe a documentação completa do projeto em PDF ou imagem (PNG).',
+        docs_readme_name: 'README',
+        docs_readme_desc: 'Visão geral do projeto, limpeza dos dados e Machine Learning no navegador.',
+        docs_ref_name: 'Referência Técnica',
+        docs_ref_desc: 'Importação, limpeza com dplyr e pipeline SQL→R com SQLite (Rmd).',
+        docs_ml_name: 'Plano de ML',
+        docs_ml_desc: 'Plano da modelagem preditiva com scikit-learn, XGBoost e SHAP.',
+        download_pdf: 'Baixar PDF',
+        download_png: 'Baixar PNG'
       },
       skills: {
         title: 'Tecnologias Utilizadas'
@@ -166,7 +176,17 @@ const resources = {
         status_verified: 'STATUS: VERIFIED',
         status_authorized: 'STATUS: AUTHORIZED',
         pipeline_status_active: 'PIPELINE STATUS ACTIVE',
-        pipeline_alert: '570 records removed during cleaning step. Data quality verified.'
+        pipeline_alert: '570 records removed during cleaning step. Data quality verified.',
+        docs_title: 'Documentation',
+        docs_subtitle: 'Download the full project documentation as PDF or image (PNG).',
+        docs_readme_name: 'README',
+        docs_readme_desc: 'Project overview, data cleaning, and in-browser Machine Learning.',
+        docs_ref_name: 'Technical Reference',
+        docs_ref_desc: 'Import, dplyr cleaning, and SQL→R pipeline with SQLite (Rmd).',
+        docs_ml_name: 'ML Plan',
+        docs_ml_desc: 'Predictive modeling plan with scikit-learn, XGBoost, and SHAP.',
+        download_pdf: 'Download PDF',
+        download_png: 'Download PNG'
       },
       skills: {
         title: 'Technologies Used'
@@ -284,7 +304,17 @@ const resources = {
         status_verified: 'STATUS: VERIFICADO',
         status_authorized: 'STATUS: AUTORIZADO',
         pipeline_status_active: 'PIPELINE STATUS ACTIVO',
-        pipeline_alert: '570 registros eliminados en la etapa de limpieza. Calidad de datos verificada.'
+        pipeline_alert: '570 registros eliminados en la etapa de limpieza. Calidad de datos verificada.',
+        docs_title: 'Documentación',
+        docs_subtitle: 'Descarga la documentación completa del proyecto en PDF o imagen (PNG).',
+        docs_readme_name: 'README',
+        docs_readme_desc: 'Visión general del proyecto, limpieza de datos y Machine Learning en el navegador.',
+        docs_ref_name: 'Referencia Técnica',
+        docs_ref_desc: 'Importación, limpieza con dplyr y pipeline SQL→R con SQLite (Rmd).',
+        docs_ml_name: 'Plan de ML',
+        docs_ml_desc: 'Plan del modelado predictivo con scikit-learn, XGBoost y SHAP.',
+        download_pdf: 'Descargar PDF',
+        download_png: 'Descargar PNG'
       },
       skills: {
         title: 'Tecnologías Utilizadas'
