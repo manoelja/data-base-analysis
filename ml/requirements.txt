@@ -1,0 +1,11 @@
+# Dependências da análise preditiva (ml/)
+# Versões exatas instaladas no ambiente de desenvolvimento (Python 3.12)
+numpy==2.4.4
+pandas==3.0.3
+scipy==1.18.0
+scikit-learn==1.9.0
+xgboost==3.3.0
+shap==0.52.0
+matplotlib==3.11.1
+seaborn==0.13.2
+jupyter
