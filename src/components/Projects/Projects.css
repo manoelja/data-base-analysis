@@ -295,6 +295,16 @@
   border-color: var(--accent-color);
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  .summary-grid {
+    gap: 0.8rem;
+  }
+
+  .projects-grid {
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);

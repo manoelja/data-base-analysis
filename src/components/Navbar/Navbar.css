@@ -276,6 +276,43 @@
   background: var(--accent-soft);
 }
 
+/* ========== TABLET (769px - 1024px) ==========
+   Faixa atingida pelo "modo computador" do Chrome no celular (~980px).
+   Acima de 900px: compacta os links (centralizados no viewport) para
+   não colidirem com o logo/controles. Abaixo de 900px: cai para o
+   drawer mobile, já que 7 links centrais não cabem sem sobrepor. */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-links {
+    gap: 0.85rem;
+  }
+
+  .nav-links a {
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+  }
+
+  .logo {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Hide desktop-only elements */
+  .desktop-only {
+    display: none;
+  }
+
+  /* Hide nav links in navbar (they go in the drawer) */
+  .nav-links {
+    display: none;
+  }
+
+  /* Show hamburger button */
+  .nav-controls .mobile-toggle {
+    display: flex;
+  }
+}
+
 /* ========== MOBILE (max-width: 768px) ========== */
 @media (max-width: 768px) {
   /* Hide desktop-only elements */
