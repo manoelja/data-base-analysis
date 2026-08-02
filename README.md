@@ -52,6 +52,36 @@ O que sobrou são **5.510 registros limpos**, prontos para análise.
 
 ---
 
+## Machine Learning no navegador
+
+Além do dashboard descritivo, o projeto tem uma seção de **Modelagem Preditiva** que roda **100% no navegador** (sem backend):
+
+- **Calculadora de risco** — Sliders de idade da mãe, semanas de gestação e consultas de pré-natal + chips de sexo, região e ano. Em tempo real, mostra a probabilidade de **baixo peso ao nascer**, um gauge com o limiar de Youden, o badge de risco, os fatores de maior influência e um **indicador de impacto (± p.p.)** ao lado de cada campo.
+- **Resultados dos modelos** — Importância SHAP das features, comparativo de 4 modelos (Dummy, Regressão Logística, Random Forest, XGBoost) com validação 5-fold e curvas ROC out-of-fold, com abas para baixo peso e prematuridade.
+- **Como funciona** — Como a **Regressão Logística venceu o XGBoost** (o sinal do dataset é majoritariamente linear), os coeficientes + scaler são exportados para `src/data/ml.ts` e o cálculo `sigmoid(w·x + b)` é feito no próprio navegador.
+
+> **Modelo em produção:** Regressão Logística — ROC-AUC 0.785 no baixo peso · limiar de Youden 0.544 · treinado em 5.379 registros completos (os 131 com campos ausentes foram descartados).
+
+---
+
+## Projeções 2024–2025 (método top-down)
+
+A seção de modelagem também inclui uma **projeção exploratória de tendência** para 2024–2025, com banda de incerteza honesta (a especificação completa está em [`ml/PROJECAO_TECH_DESIGN.md`](ml/PROJECAO_TECH_DESIGN.md)).
+
+O método, em 3 camadas:
+
+1. **Total** — Regressão linear OLS do total de nascimentos sobre o ano, com **intervalo de predição de 95%** (2025: 1.100 [941–1.259]).
+2. **Participações (%)** — Share de cada região, faixa etária e sexo, **ancorada no último valor observado (2023) + drift**, normalizada para somar 100%.
+3. **Reconciliação** — Valor de cada grupo = total × share → as dimensões **somam exatamente o total projetado**.
+
+A incerteza é propagada por método delta e cresce com o horizonte — por isso a projeção fica limitada a 2 anos (com 5 pontos anuais, prever 5 anos não seria estatisticamente defensável). O método foi validado com **holdout** (treino 2019–2022, teste em 2023): erro de **−2,0%** no total.
+
+**Destaques encontrados:** participação do **Norte** em declínio (−0,39 p.p./ano, p = 0,044) e de **mães 35+** (−0,75 p.p./ano, p = 0,059) — os únicos sinais de tendência detectáveis em 5 anos de dados.
+
+No front, o bloco exibe o gráfico (histórico sólido + projeção tracejada + banda sombreada), filtros por dimensão, alternância entre nascimentos e participação % e os cards de validação.
+
+---
+
 ## Como rodar
 
 Precisa ter o [Node.js](https://nodejs.org/) versão 18 ou superior instalado.
@@ -70,6 +100,13 @@ Depois é só abrir `http://localhost:5173` no navegador.
 ## Tecnologias
 
 O projeto foi construído com **React + TypeScript**, usando **Vite** como ferramenta de build. Os dados foram processados em **R** com persistência em **SQLite**, e o dashboard conta com animações via **Framer Motion** e internacionalização com **i18next**.
+
+A modelagem preditiva usa **Python** (`scikit-learn`, `xgboost`, `shap`, `scipy`), com scripts em `ml/` que exportam os modelos e projeções para arquivos TypeScript estáticos consumidos pelo navegador:
+
+| Script | Gera | Conteúdo |
+|:--|:--|:--|
+| `ml/export_frontend_data.py` | `src/data/ml.ts` | Modelo LR (scaler + coeficientes + limiar), SHAP, ROC, métricas |
+| `ml/export_forecast.py` | `src/data/forecast.ts` | Projeção top-down 2024–2025 com intervalo de 95%, validação e destaques |
 
 ---
 
