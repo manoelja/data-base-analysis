@@ -15,7 +15,10 @@ function App() {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
-    window.scrollTo(0, 0);
+    // Reseta o scroll de forma INSTANTÂNEA: sem behavior: smooth (herdado do
+    // `html { scroll-behavior: smooth }`), o navegador mobile não anima o
+    // viewport de volta ao topo, evitando o efeito de "zoom" na entrada.
+    window.scrollTo({ top: 0, behavior: "instant" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, []);

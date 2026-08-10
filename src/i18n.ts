@@ -49,16 +49,92 @@ const resources = {
         status_authorized: 'STATUS: AUTORIZADO',
         pipeline_status_active: 'PIPELINE STATUS ATIVO',
         pipeline_alert: '570 registros removidos na etapa de limpeza. Qualidade dos dados verificada.',
-        docs_title: 'Documentação',
-        docs_subtitle: 'Baixe a documentação completa do projeto em PDF ou imagem (PNG).',
-        docs_readme_name: 'README',
-        docs_readme_desc: 'Visão geral do projeto, limpeza dos dados e Machine Learning no navegador.',
         docs_ref_name: 'Referência Técnica',
-        docs_ref_desc: 'Importação, limpeza com dplyr e pipeline SQL→R com SQLite (Rmd).',
-        docs_ml_name: 'Plano de ML',
-        docs_ml_desc: 'Plano da modelagem preditiva com scikit-learn, XGBoost e SHAP.',
+        docs_ml_name: 'Plano ML',
         download_pdf: 'Baixar PDF',
-        download_png: 'Baixar PNG'
+        download_png: 'Baixar PNG',
+        close_modal: 'Fechar',
+        generating_pdf: 'Gerando PDF...',
+        generating_png: 'Gerando imagem...',
+        download_error: 'Erro ao baixar o arquivo. Tente novamente.',
+        docs_ref_summary: [
+          { heading: 'O que é', items: [
+            'Projeto que corrige e analisa dados de nascidos vivos do Brasil (SINASC/DataSUS, 2019–2023) usando R, SQL e SQLite.',
+            'O objetivo é encontrar e corrigir problemas nos dados para que os resultados da análise sejam confiáveis.'
+          ] },
+          { heading: 'Os dados', items: [
+            '6.080 registros de nascimentos, com erros de propósito (para exercitar a limpeza de dados)',
+            'Duas tabelas: nascimentos.csv (informações de cada nascimento) e uf_referencia.csv (regiões de cada estado)',
+            'Colunas principais: idade da mãe, peso do bebê, semanas de gestação, tipo de parto, consultas de pré-natal e nota Apgar'
+          ] },
+          { heading: 'Problemas encontrados', items: [
+            'Valores vazios (sem informação) em várias colunas',
+            'Peso do bebê escrito como texto em vez de número',
+            'Sexo grafado de formas diferentes (ex.: "fem", "masc", "f")',
+            'Siglas de estados que não existem e registros repetidos'
+          ] },
+          { heading: 'O que foi feito', items: [
+            'Padronizamos o sexo (grafias diferentes viram apenas "Masculino" ou "Feminino")',
+            'Convertemos o peso em número e removemos 183 registros com peso inválido',
+            'Mantivemos apenas idades de 10 a 55 anos (removidos 198 registros)',
+            'Removemos 114 siglas de estados inválidas e 75 registros duplicados',
+            'Total: 570 registros removidos (9,4%) — restaram 5.510 limpos'
+          ] },
+          { heading: 'Novas colunas criadas', items: [
+            'Baixo peso: "Sim" quando o bebê nasceu com menos de 2.500g',
+            'Prematuro: "Sim" quando o bebê nasceu antes das 37 semanas',
+            'Faixa etária da mãe (Adolescente, Adulta, 35 ou mais) e tipo de parto em palavras'
+          ] },
+          { heading: 'Análises realizadas', items: [
+            'Indicadores por região e por ano: cesáreas, baixo peso e prematuridade',
+            'Norte com mais cesáreas; Centro-Oeste com mais prematuridade',
+            'Maioria das mães entre 20 e 34 anos; distribuição equilibrada por sexo'
+          ] },
+          { heading: 'SQL e R trabalhando juntos', items: [
+            'Os dados foram gravados em um banco SQLite',
+            'As consultas em SQL e as análises em R (dplyr) deram os mesmos resultados'
+          ] },
+          { heading: 'Para saber mais', items: ['Documento completo com todo o código em R: data-base-analysis.Rmd.'] }
+        ],
+        docs_ml_summary: [
+          { heading: 'O que é', items: [
+            'Ensinar o computador a encontrar padrões nos dados e prever riscos, em linguagem simples.'
+          ] },
+          { heading: 'O que o modelo prevê', items: [
+            'Se o bebê vai nascer com peso baixo (menos de 2.500g) — a pergunta principal',
+            'Se vai nascer antes da hora (menos de 37 semanas)',
+            'Quanto o bebê vai pesar, em média'
+          ] },
+          { heading: 'Como funciona', items: [
+            'O computador aprende com exemplos: idade da mãe, consultas de pré-natal, região, ano e tipo de parto',
+            'Regra de ouro: nunca usar a resposta como pista (sem peso para prever baixo peso)'
+          ] },
+          { heading: 'Os modelos testados', items: [
+            'Dummy: o "chute" básico, serve de comparação',
+            'Regressão Logística: modelo simples e fácil de entender',
+            'Random Forest: "time" de árvores de decisão que vota no resultado',
+            'XGBoost: modelo avançado e poderoso',
+            'Vencedor: a Regressão Logística — simples e roda direto no navegador'
+          ] },
+          { heading: 'Como validamos', items: [
+            'Validação cruzada: treinar e testar em 5 partes diferentes dos dados',
+            'Métricas: ROC-AUC, PR-AUC, sensibilidade e especificidade',
+            'Ponto de corte otimizado (regra de Youden) para equilibrar os erros'
+          ] },
+          { heading: 'O que descobrimos (SHAP)', items: [
+            'Mães adolescentes ou com 35 anos ou mais têm mais risco de bebê de baixo peso',
+            'Mais consultas de pré-natal diminuem o risco (o pré-natal protege)'
+          ] },
+          { heading: 'Calculadora no site', items: [
+            'A calculadora de risco funciona direto no navegador, sem enviar dados para servidores'
+          ] },
+          { heading: 'Projeções 2024–2025', items: [
+            'Projeção com faixa de valores prováveis (intervalo de 95%)',
+            'Erro de −2,0% no teste com o ano de 2023',
+            'Queda da participação da região Norte (significativa) e de mães com 35+'
+          ] },
+          { heading: 'Qualidade', items: ['95 testes automatizados passando; build e lint sem erros'] }
+        ]
       },
       skills: {
         title: 'Tecnologias Utilizadas'
@@ -177,16 +253,92 @@ const resources = {
         status_authorized: 'STATUS: AUTHORIZED',
         pipeline_status_active: 'PIPELINE STATUS ACTIVE',
         pipeline_alert: '570 records removed during cleaning step. Data quality verified.',
-        docs_title: 'Documentation',
-        docs_subtitle: 'Download the full project documentation as PDF or image (PNG).',
-        docs_readme_name: 'README',
-        docs_readme_desc: 'Project overview, data cleaning, and in-browser Machine Learning.',
         docs_ref_name: 'Technical Reference',
-        docs_ref_desc: 'Import, dplyr cleaning, and SQL→R pipeline with SQLite (Rmd).',
         docs_ml_name: 'ML Plan',
-        docs_ml_desc: 'Predictive modeling plan with scikit-learn, XGBoost, and SHAP.',
         download_pdf: 'Download PDF',
-        download_png: 'Download PNG'
+        download_png: 'Download PNG',
+        close_modal: 'Close',
+        generating_pdf: 'Generating PDF...',
+        generating_png: 'Generating image...',
+        download_error: 'Error downloading the file. Please try again.',
+        docs_ref_summary: [
+          { heading: 'Overview', items: [
+            'Project that cleans and analyzes data on live births in Brazil (SINASC/DataSUS, 2019–2023) using R, SQL, and SQLite.',
+            'The goal is to find and fix data issues so that analysis results are trustworthy.'
+          ] },
+          { heading: 'The data', items: [
+            '6,080 birth records with intentional errors (to practice data cleaning)',
+            'Two tables: nascimentos.csv (information on each birth) and uf_referencia.csv (regions of each state)',
+            'Main columns: mother age, baby weight, gestational weeks, birth type, prenatal visits, and Apgar score'
+          ] },
+          { heading: 'Issues found', items: [
+            'Missing values in several columns',
+            'Baby weight stored as text instead of a number',
+            'Sex written in different ways (e.g., "fem", "masc", "f")',
+            'Invalid state codes and duplicated records'
+          ] },
+          { heading: 'What was done', items: [
+            'Standardized sex (different spellings become just "Male" or "Female")',
+            'Converted weight into a number and removed 183 records with invalid weight',
+            'Kept only ages 10 to 55 (198 records removed)',
+            'Removed 114 invalid state codes and 75 duplicated records',
+            'Total: 570 records removed (9.4%) — 5,510 clean records remain'
+          ] },
+          { heading: 'New columns created', items: [
+            'Low birth weight: "Yes" when the baby weighed less than 2,500g',
+            'Premature: "Yes" when the baby was born before 37 weeks',
+            'Mother age group (Teen, Adult, 35+) and birth type in words'
+          ] },
+          { heading: 'Analyses performed', items: [
+            'Indicators by region and year: C-sections, low birth weight, and prematurity',
+            'North with more C-sections; Midwest with more prematurity',
+            'Most mothers are 20–34; balanced distribution by sex'
+          ] },
+          { heading: 'SQL and R working together', items: [
+            'The data was stored in a SQLite database',
+            'SQL queries and R (dplyr) analyses returned the same results'
+          ] },
+          { heading: 'Learn more', items: ['Full document with all R code: data-base-analysis.Rmd.'] }
+        ],
+        docs_ml_summary: [
+          { heading: 'Overview', items: [
+            'Teaching the computer to find patterns in the data and predict risks, in simple language.'
+          ] },
+          { heading: 'What the model predicts', items: [
+            'Whether the baby will be born with low weight (under 2,500g) — the main question',
+            'Whether the baby will be born early (before 37 weeks)',
+            'The expected birth weight, on average'
+          ] },
+          { heading: 'How it works', items: [
+            'The computer learns from examples: mother age, prenatal visits, region, year, and birth type',
+            'Golden rule: never use the answer as a clue (no weight to predict low weight)'
+          ] },
+          { heading: 'Models tested', items: [
+            'Dummy: the basic "guess", used as a baseline',
+            'Logistic Regression: a simple, easy-to-understand model',
+            'Random Forest: a "team" of decision trees that votes on the result',
+            'XGBoost: an advanced, powerful model',
+            'Winner: Logistic Regression — simple and runs right in the browser'
+          ] },
+          { heading: 'How we validate', items: [
+            'Cross-validation: train and test on 5 different slices of the data',
+            'Metrics: ROC-AUC, PR-AUC, sensitivity, and specificity',
+            'Optimized cut-off (Youden\'s rule) to balance errors'
+          ] },
+          { heading: 'What we found (SHAP)', items: [
+            'Teen or 35+ mothers have a higher risk of low birth weight',
+            'More prenatal visits lower the risk (prenatal care protects)'
+          ] },
+          { heading: 'Calculator on the site', items: [
+            'The risk calculator works right in the browser, without sending data to servers'
+          ] },
+          { heading: '2024–2025 projections', items: [
+            'Projection with a range of likely values (95% interval)',
+            '−2.0% error in the test with 2023',
+            'Declining share of the North region (significant) and mothers aged 35+'
+          ] },
+          { heading: 'Quality', items: ['95 automated tests passing; build and lint clean'] }
+        ]
       },
       skills: {
         title: 'Technologies Used'
@@ -305,16 +457,92 @@ const resources = {
         status_authorized: 'STATUS: AUTORIZADO',
         pipeline_status_active: 'PIPELINE STATUS ACTIVO',
         pipeline_alert: '570 registros eliminados en la etapa de limpieza. Calidad de datos verificada.',
-        docs_title: 'Documentación',
-        docs_subtitle: 'Descarga la documentación completa del proyecto en PDF o imagen (PNG).',
-        docs_readme_name: 'README',
-        docs_readme_desc: 'Visión general del proyecto, limpieza de datos y Machine Learning en el navegador.',
         docs_ref_name: 'Referencia Técnica',
-        docs_ref_desc: 'Importación, limpieza con dplyr y pipeline SQL→R con SQLite (Rmd).',
         docs_ml_name: 'Plan de ML',
-        docs_ml_desc: 'Plan del modelado predictivo con scikit-learn, XGBoost y SHAP.',
         download_pdf: 'Descargar PDF',
-        download_png: 'Descargar PNG'
+        download_png: 'Descargar PNG',
+        close_modal: 'Cerrar',
+        generating_pdf: 'Generando PDF...',
+        generating_png: 'Generando imagen...',
+        download_error: 'Error al descargar el archivo. Inténtelo de nuevo.',
+        docs_ref_summary: [
+          { heading: 'Qué es', items: [
+            'Proyecto que corrige y analiza datos de nacidos vivos de Brasil (SINASC/DataSUS, 2019–2023) con R, SQL y SQLite.',
+            'El objetivo es encontrar y corregir problemas en los datos para que los resultados del análisis sean confiables.'
+          ] },
+          { heading: 'Los datos', items: [
+            '6.080 registros de nacimientos, con errores a propósito (para practicar la limpieza de datos)',
+            'Dos tablas: nascimentos.csv (información de cada nacimiento) y uf_referencia.csv (regiones de cada estado)',
+            'Columnas principales: edad de la madre, peso del bebé, semanas de gestación, tipo de parto, consultas prenatales y puntuación Apgar'
+          ] },
+          { heading: 'Problemas encontrados', items: [
+            'Valores vacíos (sin información) en varias columnas',
+            'Peso del bebé escrito como texto en lugar de número',
+            'Sexo escrito de formas diferentes (ej.: "fem", "masc", "f")',
+            'Siglas de estados que no existen y registros repetidos'
+          ] },
+          { heading: 'Qué se hizo', items: [
+            'Estandarizamos el sexo (las grafías diferentes pasan a ser solo "Masculino" o "Femenino")',
+            'Convertimos el peso en número y eliminamos 183 registros con peso inválido',
+            'Solo edades de 10 a 55 años (198 registros eliminados)',
+            'Eliminamos 114 siglas inválidas y 75 registros duplicados',
+            'Total: 570 registros eliminados (9,4 %) — quedaron 5.510 limpios'
+          ] },
+          { heading: 'Nuevas columnas creadas', items: [
+            'Bajo peso: "Sí" cuando el bebé nació con menos de 2.500 g',
+            'Prematuro: "Sí" cuando el bebé nació antes de las 37 semanas',
+            'Grupo de edad de la madre (Adolescente, Adulta, 35+) y tipo de parto en palabras'
+          ] },
+          { heading: 'Análisis realizados', items: [
+            'Indicadores por región y por año: cesáreas, bajo peso y prematuridad',
+            'Norte con más cesáreas; Centro-Oeste con más prematuridad',
+            'La mayoría de las madres tiene entre 20 y 34 años; distribución equilibrada por sexo'
+          ] },
+          { heading: 'SQL y R trabajando juntos', items: [
+            'Los datos se guardaron en una base de datos SQLite',
+            'Las consultas en SQL y los análisis en R (dplyr) dieron los mismos resultados'
+          ] },
+          { heading: 'Para saber más', items: ['Documento completo con todo el código en R: data-base-analysis.Rmd.'] }
+        ],
+        docs_ml_summary: [
+          { heading: 'Qué es', items: [
+            'Enseñar a la computadora a encontrar patrones en los datos y predecir riesgos, en lenguaje sencillo.'
+          ] },
+          { heading: 'Qué predice el modelo', items: [
+            'Si el bebé nacerá con bajo peso (menos de 2.500 g) — la pregunta principal',
+            'Si nacerá antes de tiempo (menos de 37 semanas)',
+            'Cuánto pesará el bebé, en promedio'
+          ] },
+          { heading: 'Cómo funciona', items: [
+            'La computadora aprende con ejemplos: edad de la madre, consultas prenatales, región, año y tipo de parto',
+            'Regla de oro: nunca usar la respuesta como pista (sin peso para predecir el bajo peso)'
+          ] },
+          { heading: 'Modelos probados', items: [
+            'Dummy: la "adivinanza" básica, sirve de comparación',
+            'Regresión Logística: modelo simple y fácil de entender',
+            'Random Forest: un "equipo" de árboles de decisión que vota el resultado',
+            'XGBoost: modelo avanzado y potente',
+            'Ganador: la Regresión Logística — simple y funciona en el navegador'
+          ] },
+          { heading: 'Cómo validamos', items: [
+            'Validación cruzada: entrenar y probar en 5 partes diferentes de los datos',
+            'Métricas: ROC-AUC, PR-AUC, sensibilidad y especificidad',
+            'Punto de corte optimizado (regla de Youden) para equilibrar los errores'
+          ] },
+          { heading: 'Qué descubrimos (SHAP)', items: [
+            'Las madres adolescentes o de 35+ tienen más riesgo de bajo peso',
+            'Más consultas prenatales reducen el riesgo (el prenatal protege)'
+          ] },
+          { heading: 'Calculadora en el sitio', items: [
+            'La calculadora de riesgo funciona en el navegador, sin enviar datos a servidores'
+          ] },
+          { heading: 'Proyecciones 2024–2025', items: [
+            'Proyección con una franja de valores probables (intervalo del 95 %)',
+            'Error de −2,0 % en la prueba con el año 2023',
+            'Caída de la participación de la región Norte (significativa) y de madres de 35+'
+          ] },
+          { heading: 'Calidad', items: ['95 pruebas automatizadas aprobadas; build y lint sin errores'] }
+        ]
       },
       skills: {
         title: 'Tecnologías Utilizadas'

@@ -1,6 +1,6 @@
 ---
 title: "Data Base Analysis — Referência Técnica"
-subtitle: "Importação, Limpeza e Pipeline SQL→R para Dados de Nascidos Vivos"
+subtitle: "Como os dados de nascidos vivos foram corrigidos e analisados — em linguagem simples"
 date: "2024"
 output:
   html_document:
@@ -19,37 +19,39 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE,
 
 # 1. Visão Geral
 
-Pipeline completo de importação, limpeza e análise de dados de nascidos vivos brasileiros (SINASC/DataSUS) utilizando R, SQL e SQLite.
+Este documento mostra o passo a passo de como os dados de nascidos vivos do Brasil (registros do SINASC/DataSUS) foram importados, corrigidos e analisados usando R, SQL e SQLite.
 
-**Objetivo:** Diagnosticar e resolver problemas de qualidade em dados reais, aplicando técnicas de limpeza e validação que garantem a integridade analítica dos resultados.
+**Objetivo:** encontrar e corrigir problemas nos dados (como valores errados, faltando ou repetidos) para que os resultados da análise sejam confiáveis.
 
 ## 1.1 Conjunto de Dados
 
-Duas tabelas que formam um modelo relacional de nascidos vivos entre 2019 e 2023:
+Os dados vêm de duas tabelas que se relacionam entre si, cobrindo nascimentos de 2019 a 2023:
 
-- `nascimentos.csv` — Tabela-fato com problemas de qualidade intencionais. Chave primária: `ID_NASCIMENTO`
-- `uf_referencia.csv` — Dimensão geográfica (`UF`, `REGIAO`). `UF` é a chave estrangeira
+- `nascimentos.csv` — A tabela principal, com as informações de cada nascimento. Ela contém erros de propósito, para exercitar a limpeza de dados. Cada linha tem um número único (`ID_NASCIMENTO`).
+- `uf_referencia.csv` — A tabela de apoio, que liga cada estado (`UF`) à sua região (`REGIAO`).
 
 ### Dicionário de Variáveis
 
 | Variável | Tipo | Descrição |
 |:---------|:-----|:----------|
-| `ID_NASCIMENTO` | int | Identificador único (PK) |
+| `ID_NASCIMENTO` | int | Número único de cada registro (chave) |
 | `ANO` | int | Ano do nascimento (2019–2023) |
-| `UF` | chr | Sigla do estado (FK → `uf_referencia`) |
-| `SEXO` | chr | Sexo do bebê (texto com grafias variadas) |
+| `UF` | chr | Sigla do estado (ex.: SP, MG) |
+| `SEXO` | chr | Sexo do bebê (escrito de formas diferentes) |
 | `IDADE_MAE` | int | Idade da mãe em anos |
-| `PESO_GRAMAS` | int | Peso ao nascer, em gramas |
-| `SEMANAS_GESTACAO` | int | Idade gestacional em semanas |
-| `TIPO_PARTO` | int | 1 = Vaginal, 2 = Cesáreo |
+| `PESO_GRAMAS` | int | Peso do bebê ao nascer, em gramas |
+| `SEMANAS_GESTACAO` | int | Quantas semanas durou a gestação |
+| `TIPO_PARTO` | int | 1 = Parto normal, 2 = Cesárea |
 | `CONSULTAS_PRENATAL` | int | Número de consultas de pré-natal |
-| `APGAR5` | int | Apgar no 5º minuto (0 a 10) |
+| `APGAR5` | int | Nota de saúde do bebê no 5º minuto (0 a 10) |
 
 ---
 
 # 2. Importação e Diagnóstico
 
 ## 2.1 Pacotes e Importação
+
+Para trabalhar com os dados, usamos algumas ferramentas do R (chamadas de pacotes ou bibliotecas). O `dplyr`, por exemplo, ajuda a organizar e transformar tabelas de um jeito simples. Primeiro, carregamos os dados dos arquivos CSV:
 
 ```{r importacao}
 library(dplyr)
@@ -71,12 +73,16 @@ cat("UF Referência:", nrow(uf_ref), "linhas e", ncol(uf_ref), "colunas\n")
 
 ## 2.2 Diagnóstico de Qualidade
 
+Antes de analisar, investigamos os dados para descobrir os problemas. Este código mostra a estrutura e um resumo de cada coluna:
+
 ```{r diagnostico}
 str(nascimentos)
 skim(nascimentos)
 ```
 
 ### Mapa de Valores Ausentes
+
+Este gráfico mostra onde estão as lacunas (valores vazios) nos dados:
 
 ```{r vis_miss, fig.width=10, fig.height=6}
 vis_miss(nascimentos) +
@@ -87,15 +93,21 @@ vis_miss(nascimentos) +
 
 ### Observações
 
-- **PESO_GRAMAS:** Importada como texto (character) devido a ruídos ou espaços em branco
-- **SEXO:** Variável qualitativa com grafias inconsistentes (ex: "fem", "masc", "f")
-- **IDADE_MAE, PESO_GRAMAS, SEMANAS_GESTACAO, TIPO_PARTO:** Apresentam registros vazios (NAs)
+Os problemas encontrados foram:
+
+- **PESO_GRAMAS (peso do bebê):** veio como texto em vez de número, por causa de espaços ou ruídos
+- **SEXO:** escrito de jeitos diferentes (ex.: "fem", "masc", "f")
+- **IDADE_MAE, PESO_GRAMAS, SEMANAS_GESTACAO, TIPO_PARTO:** alguns registros vieram vazios (sem informação)
 
 ---
 
 # 3. Limpeza com dplyr
 
+Aqui corrigimos os problemas encontrados, usando o `dplyr` (uma ferramenta do R para transformar tabelas de forma organizada).
+
 ## 3.1 SEXO: Grafia Inconsistente
+
+Padronizar a escrita do sexo (ex.: "masc" e "Masculino" passam a ser apenas "Masculino"):
 
 ```{r limpeza_sexo}
 # Diagnóstico das grafias
@@ -116,6 +128,8 @@ nascimentos |> count(SEXO)
 
 ## 3.2 PESO_GRAMAS: Conversão e Validação
 
+Transformar o peso em número e descartar valores vazios ou negativos (o peso de um bebê precisa ser um número positivo):
+
 ```{r limpeza_peso}
 nascimentos <- nascimentos |>
   mutate(PESO_GRAMAS = suppressWarnings(as.numeric(PESO_GRAMAS)))
@@ -132,6 +146,8 @@ cat("Linhas após tratar PESO_GRAMAS:", nrow(nascimentos), "\n")
 
 ## 3.3 IDADE_MAE: Faixa Biológica Plausível
 
+Manter apenas idades entre 10 e 55 anos (faixa considerada biologicamente possível para ter filhos):
+
 ```{r limpeza_idade}
 # Critério: idade entre 10 e 55 anos (faixa biologicamente plausível)
 nascimentos |>
@@ -145,6 +161,8 @@ cat("Linhas após tratar IDADE_MAE:", nrow(nascimentos), "\n")
 ```
 
 ## 3.4 UF: Siglas Inválidas
+
+Remover siglas de estados que não existem na tabela de referência (ex.: uma sigla inventada):
 
 ```{r limpeza_uf}
 ufs_validas <- uf_ref$UF
@@ -161,6 +179,8 @@ cat("Linhas após tratar UF:", nrow(nascimentos), "\n")
 
 ## 3.5 Registros Duplicados
 
+Remover linhas repetidas (o mesmo registro aparecendo mais de uma vez):
+
 ```{r limpeza_duplicatas}
 cat("Duplicadas:", sum(duplicated(nascimentos)), "\n")
 
@@ -170,6 +190,8 @@ cat("Linhas após remover duplicatas:", nrow(nascimentos), "\n")
 ```
 
 ### Resumo da Limpeza
+
+No total, **570 registros (9,4% do total)** foram removidos — dados com erros, faltando informações ou repetidos:
 
 | Etapa | Registros Removidos | Motivo |
 |:------|--------------------:|:-------|
@@ -183,7 +205,11 @@ cat("Linhas após remover duplicatas:", nrow(nascimentos), "\n")
 
 # 4. Variáveis Derivadas
 
+Criamos colunas novas que resumem as informações em algo mais fácil de entender e usar nas análises.
+
 ## 4.1 Rótulo de Tipo de Parto
+
+Transformar o código do tipo de parto (1 ou 2) em palavras (Vaginal ou Cesáreo):
 
 ```{r derivada_parto}
 nascimentos <- nascimentos |>
@@ -193,6 +219,8 @@ nascimentos |> count(TIPO_PARTO, TIPO_PARTO_LABEL)
 ```
 
 ## 4.2 Baixo Peso e Prematuridade
+
+Marcar "Sim" quando o bebê nasceu com menos de 2.500g (**baixo peso**) ou antes das 37 semanas (**prematuro**):
 
 ```{r derivada_peso}
 nascimentos <- nascimentos |>
@@ -206,6 +234,8 @@ nascimentos |> count(PREMATURO)
 ```
 
 ## 4.3 Faixa Etária da Mãe
+
+Dividir a idade da mãe em grupos (Adolescente, Adulta, 35 ou mais):
 
 ```{r derivada_idade}
 nascimentos <- nascimentos |>
@@ -225,7 +255,11 @@ nascimentos |> count(FAIXA_IDADE_MAE)
 
 # 5. Análise Exploratória com dplyr
 
+Com os dados corrigidos, calculamos alguns números interessantes para entender melhor o cenário.
+
 ## 5.1 Indicadores por Região
+
+Para cada região do Brasil, vemos quantos nascimentos houve e a porcentagem de cesáreas, baixo peso e prematuridade:
 
 ```{r analise_regiao}
 nascimentos |>
@@ -242,6 +276,8 @@ nascimentos |>
 ```
 
 ## 5.2 Tabela Consolidada
+
+Um resumo geral dos principais números do projeto:
 
 ```{r tabela_resumo}
 resumo <- data.frame(
@@ -270,6 +306,8 @@ resumo |>
 
 ## 5.3 Distribuição por Sexo
 
+Quantos bebês de cada sexo nasceram, e a porcentagem de cada um:
+
 ```{r analise_sexo}
 nascimentos |>
   count(SEXO) |>
@@ -277,6 +315,8 @@ nascimentos |>
 ```
 
 ## 5.4 Evolução Temporal
+
+Como os números mudaram ao longo dos anos (2019 a 2023):
 
 ```{r analise_temporal}
 nascimentos |>
@@ -293,7 +333,11 @@ nascimentos |>
 
 # 6. Pipeline SQL→R
 
+Depois de limpar os dados, guardamos tudo em um banco de dados (SQLite) e repetimos as análises usando SQL (a linguagem padrão de bancos de dados). O objetivo é mostrar que os resultados são os mesmos nas duas ferramentas.
+
 ## 6.1 Criando o Banco SQLite
+
+Criamos as tabelas do banco e copiamos os dados para dentro dele:
 
 ```{r sqlite_criacao}
 con <- dbConnect(RSQLite::SQLite(), "nascimentos.sqlite")
@@ -336,7 +380,7 @@ dbListTables(con)
 
 ## 6.2 SELECT com WHERE e ORDER BY
 
-10 bebês prematuros com menor peso:
+Exemplo: os 10 bebês prematuros com menor peso ao nascer:
 
 ```{r sql_select}
 dbGetQuery(con, "
@@ -350,7 +394,7 @@ dbGetQuery(con, "
 
 ## 6.3 GROUP BY com HAVING
 
-% de cesáreas por UF (apenas UFs com mais de 100 nascimentos):
+Exemplo: porcentagem de cesáreas por estado, considerando apenas estados com mais de 100 nascimentos:
 
 ```{r sql_group}
 dbGetQuery(con, "
@@ -366,7 +410,7 @@ dbGetQuery(con, "
 
 ## 6.4 JOIN entre Tabelas
 
-Número de nascimentos por região:
+Exemplo: juntar as duas tabelas para contar quantos nascimentos houve em cada região:
 
 ```{r sql_join}
 dbGetQuery(con, "
@@ -380,6 +424,8 @@ dbGetQuery(con, "
 ```
 
 ## 6.5 Encerramento
+
+Fechamos a conexão com o banco de dados:
 
 ```{r sql_disconnect}
 dbDisconnect(con)
@@ -395,24 +441,26 @@ dbDisconnect(con)
 - **Registros finais:** 5.510
 - **Total removidos:** 570 (9,4%)
 
-As exclusões ocorreram devido à presença de valores ausentes, valores inválidos e registros que não atendiam aos critérios de consistência definidos para a análise.
+Os registros removidos tinham informações faltando, erradas ou repetidas, e não podiam ser usados com segurança na análise.
 
 ## 7.2 Consistência entre dplyr e SQL
 
-As análises realizadas com dplyr e SQL produziram resultados equivalentes, demonstrando que ambas as linguagens permitem realizar as mesmas operações de manipulação e agregação de dados quando utilizadas corretamente.
+As análises feitas com dplyr e com SQL deram **os mesmos resultados**. Isso mostra que as duas ferramentas conseguem fazer as mesmas operações quando usadas corretamente:
 
-- **SQL:** Consultas declarativas
-- **dplyr:** Pipelines legíveis e modulares
+- **SQL:** você diz o que quer (ex.: "quantos nascimentos por região"), e o banco resolve como fazer.
+- **dplyr:** você escreve os passos de forma clara e organizada, como uma receita.
 
 ## 7.3 Destaques
 
-- A região **Norte** apresentou a maior proporção de cesáreas
-- A idade materna predominante é na faixa **Adulta** (20–34 anos)
-- A taxa de prematuridade varia entre regiões, sendo maior no **Centro-Oeste**
+- A região **Norte** teve a maior proporção de cesáreas
+- A maioria das mães está na faixa **Adulta** (20–34 anos)
+- A prematuridade varia entre as regiões, sendo maior no **Centro-Oeste**
 
 ---
 
 # 8. Sessão
+
+Informações do ambiente onde a análise foi feita (para quem quiser reproduzir o trabalho):
 
 ```{r session}
 sessionInfo()

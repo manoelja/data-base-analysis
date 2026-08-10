@@ -387,15 +387,15 @@ SOURCES = [
     },
     {
         "name": "Referencia_Tecnica",
-        "title": "Data Base Analysis — Referência Técnica",
-        "subtitle": "Importação, limpeza e pipeline SQL→R para dados de nascidos vivos (SINASC/DataSUS)",
-        "file": os.path.join(ROOT, "public", "data-base-analysis.Rmd"),
+        "title": "Referência Técnica",
+        "subtitle": "Resumo em uma página · linguagem simples",
+        "file": os.path.join(ROOT, "ml", "resumos", "referencia_tecnica.md"),
     },
     {
         "name": "Plano_ML",
-        "title": "Plano de Implementação — Modelagem Preditiva",
-        "subtitle": "Machine Learning com scikit-learn, XGBoost e SHAP · projeções 2024–2025",
-        "file": os.path.join(ROOT, "ML_IMPLEMENTATION_PLAN.md"),
+        "title": "Plano de ML",
+        "subtitle": "Resumo em uma página · linguagem simples",
+        "file": os.path.join(ROOT, "ml", "resumos", "plano_ml.md"),
     },
 ]
 

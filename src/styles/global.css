@@ -215,6 +215,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Offset for fixed navbar */
   overscroll-behavior: none; /* Prevent overscroll bounce */
+  /* Usa `clip` (não `hidden`) para impedir overflow horizontal transitório que
+     faria o navegador mobile re-escalar a página (zoom no carregamento). `clip`
+     não cria scroll container e não afeta a rolagem vertical. */
+  overflow-x: clip;
 }
 
 /* Ensure body starts at top */
@@ -228,7 +232,8 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* Mesmo guard do html: impede o re-zoom do navegador mobile por overflow. */
+  overflow-x: clip;
 }
 
 .neural-background {
@@ -378,6 +383,18 @@ section { padding: 8rem 0; }
 /* Touch improvements */
 button, a, [role="button"] {
   touch-action: manipulation;
+}
+
+/* Desativa transições durante a troca de tema: as cores vêm de variáveis
+   de :root e, sem isso, o navegador re-animaria toda a página
+   (transition: all 0.3-0.5s + backdrop-filter), causando atraso perceptível
+   no navbar em dispositivos mobile. A classe é adicionada/removida pelo
+   Navbar ao alternar o tema (ver src/components/Navbar/Navbar.tsx). */
+html.no-theme-transition,
+html.no-theme-transition *,
+html.no-theme-transition *::before,
+html.no-theme-transition *::after {
+  transition: none !important;
 }
 
 * {
