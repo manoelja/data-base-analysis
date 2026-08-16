@@ -17,12 +17,17 @@
     <script>
       // Aplica o tema salvo ANTES do primeiro paint, evitando o flash de fundo
       // (escuro → claro) ao recarregar a página no modo claro.
+      // O script NÃO toca em backgroundColor nem em <meta name="theme-color">.
       try {
         if (localStorage.getItem('theme') === 'light') {
           document.documentElement.classList.add('light-theme');
         }
       } catch (e) {}
     </script>
+    <style>
+      html { background-color: #0a0a12; }
+      html.light-theme { background-color: #fdf2f8; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
