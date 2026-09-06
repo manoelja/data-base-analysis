@@ -407,6 +407,8 @@ $ APGAR5         <int> 8, 8, 10, 9, 8`, type: 'success' },
                 <input
                   ref={inputRef}
                   type="text"
+                  id="terminal-input"
+                  name="terminal-input"
                   className="terminal-input"
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}

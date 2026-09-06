@@ -588,9 +588,9 @@ const DashboardEnhanced = () => {
 
           {/* Primary Filters */}
           <div className="primary-filters">
-            <label className="control-label">
+            <span className="control-label">
               {lang === 'pt' ? 'Filtros (selecione um ou mais)' : 'Filters (select one or more)'}
-            </label>
+            </span>
             <div className="primary-filter-buttons">
               {(['region', 'year', 'age', 'sexo'] as PrimaryFilter[]).map(filter => (
                 <button
@@ -617,9 +617,9 @@ const DashboardEnhanced = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
             >
-              <label className="control-label">
+              <span className="control-label">
                 {primaryFilterLabels[filter][lang] || primaryFilterLabels[filter]['pt']}
-              </label>
+              </span>
 
               {filter === 'age' ? (
                 <div className="age-filter">
@@ -634,42 +634,42 @@ const DashboardEnhanced = () => {
                       </button>
                     ))}
                   </div>
-                  <div className="age-range">
-                    <label className="period-label">{lang === 'pt' ? 'Ou selecione por idade:' : 'Or select by age:'}</label>
-                    <div className="age-inputs">
-                      <div className="period-select">
-                        <label className="period-label">{lang === 'pt' ? 'De' : 'From'}</label>
-                        <div className="age-input-wrapper">
-                          <input type="number" className="age-input" min={10} max={55} value={ageFrom}
-                            onChange={(e) => {
-                              const val = Math.min(Number(e.target.value) || 10, ageTo);
-                              setAgeFrom(val);
-                              setFilterValues(fv => ({ ...fv, age: [] }));
-                            }} />
-                          <div className="age-spinner">
-                            <button className="age-spinner-btn" onClick={() => {
-                              const newVal = Math.min(ageFrom + 1, ageTo);
-                              setAgeFrom(newVal);
-                              setFilterValues(fv => ({ ...fv, age: [] }));
-                            }}>▲</button>
-                            <button className="age-spinner-btn" onClick={() => {
-                              const newVal = Math.max(ageFrom - 1, 10);
-                              setAgeFrom(newVal);
-                              setFilterValues(fv => ({ ...fv, age: [] }));
-                            }}>▼</button>
+                    <div className="age-range">
+                      <span className="period-label">{lang === 'pt' ? 'Ou selecione por idade:' : 'Or select by age:'}</span>
+                      <div className="age-inputs">
+                        <div className="period-select">
+                          <label className="period-label" htmlFor="age-from">{lang === 'pt' ? 'De' : 'From'}</label>
+                          <div className="age-input-wrapper">
+                            <input id="age-from" name="age-from" type="number" className="age-input" min={10} max={55} value={ageFrom}
+                              onChange={(e) => {
+                                const val = Math.min(Number(e.target.value) || 10, ageTo);
+                                setAgeFrom(val);
+                                setFilterValues(fv => ({ ...fv, age: [] }));
+                              }} />
+                            <div className="age-spinner">
+                              <button className="age-spinner-btn" onClick={() => {
+                                const newVal = Math.min(ageFrom + 1, ageTo);
+                                setAgeFrom(newVal);
+                                setFilterValues(fv => ({ ...fv, age: [] }));
+                              }}>▲</button>
+                              <button className="age-spinner-btn" onClick={() => {
+                                const newVal = Math.max(ageFrom - 1, 10);
+                                setAgeFrom(newVal);
+                                setFilterValues(fv => ({ ...fv, age: [] }));
+                              }}>▼</button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <span className="period-separator">—</span>
-                      <div className="period-select">
-                        <label className="period-label">{lang === 'pt' ? 'Até' : 'To'}</label>
-                        <div className="age-input-wrapper">
-                          <input type="number" className="age-input" min={10} max={55} value={ageTo}
-                            onChange={(e) => {
-                              const val = Math.max(Number(e.target.value) || 55, ageFrom);
-                              setAgeTo(val);
-                              setFilterValues(fv => ({ ...fv, age: [] }));
-                            }} />
+                        <span className="period-separator">—</span>
+                        <div className="period-select">
+                          <label className="period-label" htmlFor="age-to">{lang === 'pt' ? 'Até' : 'To'}</label>
+                          <div className="age-input-wrapper">
+                            <input id="age-to" name="age-to" type="number" className="age-input" min={10} max={55} value={ageTo}
+                              onChange={(e) => {
+                                const val = Math.max(Number(e.target.value) || 55, ageFrom);
+                                setAgeTo(val);
+                                setFilterValues(fv => ({ ...fv, age: [] }));
+                              }} />
                           <div className="age-spinner">
                             <button className="age-spinner-btn" onClick={() => {
                               const newVal = Math.min(ageTo + 1, 55);
@@ -740,7 +740,7 @@ const DashboardEnhanced = () => {
           {/* Metrics */}
           <div className="controls-grid">
             <div className="control-group">
-              <label className="control-label">{t('dashboard.metric')} <span className="hint">(multi)</span></label>
+              <span className="control-label">{t('dashboard.metric')} <span className="hint">(multi)</span></span>
               <div className="control-buttons">
                 {(Object.keys(metricLabels) as Metric[]).map(m => (
                   <button key={m} className={`control-btn ${metrics.includes(m) ? 'active' : ''}`} onClick={() => toggleMetric(m)}>
@@ -752,7 +752,7 @@ const DashboardEnhanced = () => {
             </div>
 
             <div className="control-group">
-              <label className="control-label">{t('dashboard.chart')}</label>
+              <span className="control-label">{t('dashboard.chart')}</span>
               <div className="control-buttons chart-type-btns">
                 {[
                   { type: 'bar' as ChartType, icon: <BarChart3 size={15} /> },

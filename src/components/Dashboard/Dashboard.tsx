@@ -229,7 +229,7 @@ const Dashboard = () => {
 
           <div className="controls-grid">
             <div className="control-group">
-              <label className="control-label">{t('dashboard.source')}</label>
+              <span className="control-label">{t('dashboard.source')}</span>
               <div className="control-buttons">
                 {(Object.keys(sourceLabels) as DataSource[]).map(src => (
                   <button
@@ -244,7 +244,7 @@ const Dashboard = () => {
             </div>
 
             <div className="control-group">
-              <label className="control-label">{t('dashboard.metric')} <span className="hint">(multi)</span></label>
+              <span className="control-label">{t('dashboard.metric')} <span className="hint">(multi)</span></span>
               <div className="control-buttons">
                 {(Object.keys(metricLabels) as Metric[]).map(m => (
                   <button
@@ -260,7 +260,7 @@ const Dashboard = () => {
             </div>
 
             <div className="control-group">
-              <label className="control-label">{t('dashboard.chart')}</label>
+              <span className="control-label">{t('dashboard.chart')}</span>
               <div className="control-buttons chart-type-btns">
                 {[
                   { type: 'bar' as ChartType, icon: <BarChart3 size={15} />, tip: 'Barras verticais' },
