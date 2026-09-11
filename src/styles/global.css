@@ -258,6 +258,17 @@ main.container {
   min-height: 100vh;
 }
 
+/* Com um documento aberto, o conteúdo da página sai de cena atrás do modal —
+   mesmo efeito do CVModal do manoelja, onde o hero (flex centralizado, texto
+   com max-width) fica inteiro dentro do modal. Aqui o hero é um grid de
+   largura total em 2 colunas, então o "início" vazaria pelas laterais do
+   modal; escondendo o conteúdo, o resultado visual é o mesmo. */
+.App.doc-open main {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 /* Background blobs */
 .bg-blobs {
   position: fixed;

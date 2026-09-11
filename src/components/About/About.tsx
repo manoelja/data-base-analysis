@@ -6,11 +6,15 @@ import { cleaningStats } from '../../data/analysis';
 import DocumentPreviewModal, { type DocInfo } from './DocumentPreviewModal';
 import './About.css';
 
-const About = () => {
+interface AboutProps {
+  previewDoc: DocInfo | null;
+  setPreviewDoc: (doc: DocInfo | null) => void;
+}
+
+const About = ({ previewDoc, setPreviewDoc }: AboutProps) => {
   const { t } = useTranslation();
   const [expandedEdu, setExpandedEdu] = useState<string | null>(null);
   const [isMainExpanded, setIsMainExpanded] = useState(false);
-  const [previewDoc, setPreviewDoc] = useState<DocInfo | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0 },

@@ -2,24 +2,23 @@
 
 .doc-modal-portal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 2rem;
+  padding: 6rem 2rem 2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* Evita que o overscroll do modal vaze para a página */
 }
 
 .doc-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(4, 4, 12, 0.78);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-html.light-theme .doc-modal-backdrop {
-  background: rgba(30, 10, 25, 0.45);
+  background: transparent;
 }
 
 .doc-modal-container {
@@ -31,10 +30,14 @@ html.light-theme .doc-modal-backdrop {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg), 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5);
+}
+
+html.light-theme .doc-modal-container {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Header */
@@ -44,8 +47,8 @@ html.light-theme .doc-modal-backdrop {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--card-border);
-  background: linear-gradient(145deg, rgba(255, 107, 157, 0.05) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
 }
 
 .doc-modal-title-group {
@@ -158,7 +161,56 @@ html.light-theme .doc-modal-backdrop {
 
 .doc-summary-body {
   padding: 2rem 2.5rem;
-  background: linear-gradient(145deg, rgba(255, 107, 157, 0.03) 0%, transparent 55%);
+  background: transparent;
+}
+
+/* Paper preview — document look-alike (what you see is what you download) */
+.doc-paper {
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+html.light-theme .doc-paper {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.doc-paper-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.doc-paper-title {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.doc-paper-subtitle {
+  font-size: clamp(0.6rem, 1.2vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.doc-paper-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .doc-summary-section {
@@ -218,11 +270,11 @@ html.light-theme .doc-modal-backdrop {
 /* Responsivo */
 @media (max-width: 768px) {
   .doc-modal-portal {
-    padding: 0.75rem;
+    padding: 4rem 0.75rem 0.75rem;
   }
 
   .doc-modal-container {
-    max-height: 94vh;
+    max-height: 95vh;
     border-radius: var(--radius-lg);
   }
 
@@ -244,6 +296,10 @@ html.light-theme .doc-modal-backdrop {
   }
 
   .doc-summary-body {
+    padding: 1.25rem 1rem;
+  }
+
+  .doc-paper {
     padding: 1.25rem 1rem;
   }
 }

@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { DocInfo } from './components/About/DocumentPreviewModal';
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import About from './components/About/About';
@@ -11,6 +12,8 @@ import CyberBackground from './components/CyberBackground/CyberBackground';
 import './styles/global.css';
 
 function App() {
+  const [previewDoc, setPreviewDoc] = useState<DocInfo | null>(null);
+
   useEffect(() => {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -24,16 +27,16 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className={`App${previewDoc ? ' doc-open' : ''}`}>
       <CyberBackground />
 
-      <Navbar />
+      <Navbar isDocOpen={previewDoc !== null} />
 
       {/* Sem a classe container aqui: cada seção já aplica o próprio .container,
           e o duplo padding deixava o conteúdo (4rem) desalinhado com a navbar (2rem). */}
       <main>
         <Hero />
-        <About />
+        <About previewDoc={previewDoc} setPreviewDoc={setPreviewDoc} />
         <Skills />
         <Projects />
         <Dashboard />
